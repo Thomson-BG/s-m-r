@@ -452,7 +452,7 @@ extension GameUI: GameOverViewDelegate {
 // MARK: - Supporting Types
 
 enum UnitAction {
-    case move, attack, stop, patrol, guard
+    case move, attack, stop, patrol, `guard`
 }
 
 enum BuildingAction {
