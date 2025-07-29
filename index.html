@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scotty Mason's Revenge - RTS</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/ui.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="game-logo">
+                <h1>SCOTTY MASON'S REVENGE</h1>
+                <p>Real-Time Strategy</p>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress" id="loading-progress"></div>
+            </div>
+            <div class="loading-text" id="loading-text">Initializing Game Engine...</div>
+        </div>
+        <div class="loading-background"></div>
+    </div>
+
+    <!-- Main Menu -->
+    <div id="main-menu" class="main-menu hidden">
+        <div class="menu-background"></div>
+        <div class="menu-content">
+            <div class="game-title">
+                <h1>SCOTTY MASON'S REVENGE</h1>
+                <h2>Real-Time Strategy</h2>
+            </div>
+            
+            <div class="menu-buttons">
+                <button id="start-game-btn" class="menu-button primary">START GAME</button>
+                <button id="campaign-btn" class="menu-button">CAMPAIGN</button>
+                <button id="skirmish-btn" class="menu-button">SKIRMISH</button>
+                <button id="load-game-btn" class="menu-button">LOAD GAME</button>
+                <button id="settings-btn" class="menu-button">SETTINGS</button>
+                <button id="credits-btn" class="menu-button">CREDITS</button>
+            </div>
+
+            <div class="developer-info">
+                <div class="developer-logo">Ti</div>
+                <p>Thomson Innovations</p>
+            </div>
+        </div>
+        <canvas id="menu-particles" class="menu-particles"></canvas>
+    </div>
+
+    <!-- Game Interface -->
+    <div id="game-interface" class="game-interface hidden">
+        <!-- Game Canvas -->
+        <canvas id="game-canvas" class="game-canvas"></canvas>
+        
+        <!-- Top HUD -->
+        <div class="top-hud">
+            <div class="resource-display">
+                <div class="resource-item">
+                    <span class="resource-icon">💰</span>
+                    <span class="resource-value" id="credits-display">5000</span>
+                </div>
+                <div class="resource-item">
+                    <span class="resource-icon">⚡</span>
+                    <span class="resource-value" id="power-display">100/100</span>
+                </div>
+            </div>
+            
+            <div class="game-controls">
+                <button id="pause-btn" class="control-button">⏸️</button>
+                <button id="speed-btn" class="control-button">⏩</button>
+                <button id="menu-btn" class="control-button">📋</button>
+            </div>
+        </div>
+
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <div class="minimap-container">
+                <canvas id="minimap" class="minimap"></canvas>
+                <div class="minimap-title">TACTICAL MAP</div>
+            </div>
+            
+            <div class="faction-info">
+                <div class="faction-banner" id="faction-banner">
+                    <h3 id="faction-name">Allied Forces</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Panel -->
+        <div class="bottom-panel">
+            <div class="selected-info" id="selected-info">
+                <div class="info-content">
+                    <h3 id="selected-name">Select a unit or building</h3>
+                    <div id="selected-details" class="selected-details"></div>
+                </div>
+            </div>
+            
+            <div class="action-panel" id="action-panel">
+                <div class="action-grid" id="action-grid">
+                    <!-- Action buttons will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <div class="build-queue" id="build-queue">
+                <h3>BUILD QUEUE</h3>
+                <div class="queue-items" id="queue-items">
+                    <!-- Queue items will be populated dynamically -->
+                </div>
+            </div>
+            
+            <div class="unit-groups" id="unit-groups">
+                <h3>UNIT GROUPS</h3>
+                <div class="group-buttons">
+                    <button class="group-btn" data-group="1">1</button>
+                    <button class="group-btn" data-group="2">2</button>
+                    <button class="group-btn" data-group="3">3</button>
+                    <button class="group-btn" data-group="4">4</button>
+                    <button class="group-btn" data-group="5">5</button>
+                    <button class="group-btn" data-group="6">6</button>
+                    <button class="group-btn" data-group="7">7</button>
+                    <button class="group-btn" data-group="8">8</button>
+                    <button class="group-btn" data-group="9">9</button>
+                    <button class="group-btn" data-group="0">0</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selection Box -->
+        <div id="selection-box" class="selection-box hidden"></div>
+        
+        <!-- Tooltip -->
+        <div id="tooltip" class="tooltip hidden">
+            <div class="tooltip-content" id="tooltip-content"></div>
+        </div>
+    </div>
+
+    <!-- Modal Dialogs -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div class="setting-group">
+                    <label>Graphics Quality:</label>
+                    <select id="graphics-quality">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Master Volume:</label>
+                    <input type="range" id="master-volume" min="0" max="100" value="70">
+                    <span id="volume-value">70%</span>
+                </div>
+                <div class="setting-group">
+                    <label>Game Speed:</label>
+                    <select id="game-speed">
+                        <option value="0.5">Slow</option>
+                        <option value="1.0" selected>Normal</option>
+                        <option value="1.5">Fast</option>
+                        <option value="2.0">Very Fast</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Credits Modal -->
+        <div id="credits-modal" class="modal hidden">
+            <div class="modal-header">
+                <h2>Credits</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-content credits-content">
+                <div class="credits-section">
+                    <h3>SCOTTY MASON'S REVENGE</h3>
+                    <p>A Real-Time Strategy Game</p>
+                    <p>Inspired by Command & Conquer: Red Alert 2</p>
+                </div>
+                
+                <div class="credits-section">
+                    <h4>DEVELOPED BY</h4>
+                    <p>Josh Thomson</p>
+                </div>
+                
+                <div class="credits-section">
+                    <h4>COMMISSIONED BY</h4>
+                    <p>Scotty Mason</p>
+                </div>
+                
+                <div class="credits-section">
+                    <h4>SPECIAL THANKS</h4>
+                    <p>Command & Conquer fans worldwide</p>
+                    <p>The RTS gaming community</p>
+                </div>
+                
+                <div class="credits-section">
+                    <h4>POWERED BY</h4>
+                    <p>Thomson Innovations</p>
+                </div>
+                
+                <div class="credits-section">
+                    <p>© 2024 All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Scripts -->
+    <script src="js/core/GameEngine.js"></script>
+    <script src="js/core/ResourceManager.js"></script>
+    <script src="js/core/AudioManager.js"></script>
+    <script src="js/core/InputManager.js"></script>
+    <script src="js/core/Renderer.js"></script>
+    <script src="js/systems/UnitManager.js"></script>
+    <script src="js/systems/BuildingManager.js"></script>
+    <script src="js/systems/FactionManager.js"></script>
+    <script src="js/systems/CampaignManager.js"></script>
+    <script src="js/game/Unit.js"></script>
+    <script src="js/game/Building.js"></script>
+    <script src="js/game/GameObject.js"></script>
+    <script src="js/ui/UIManager.js"></script>
+    <script src="js/ui/MenuSystem.js"></script>
+    <script src="js/utils/Utils.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
