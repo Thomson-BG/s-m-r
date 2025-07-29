@@ -1,0 +1,102 @@
+{
+  "name": "scotty-masons-revenge",
+  "version": "1.0.0",
+  "description": "A web-based Real-Time Strategy game inspired by Command & Conquer: Red Alert 2",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "dev": "./start-server.sh",
+    "build": "echo 'No build process needed - pure HTML/CSS/JS'",
+    "test": "echo 'Manual testing via browser'",
+    "serve": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "rts",
+    "real-time-strategy",
+    "game",
+    "command-and-conquer",
+    "red-alert",
+    "web-game",
+    "html5",
+    "canvas",
+    "javascript"
+  ],
+  "author": {
+    "name": "Josh Thomson",
+    "company": "Thomson Innovations",
+    "commissioned_by": "Scotty Mason"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/Thomson-BG/s-m-r",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Thomson-BG/s-m-r.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Thomson-BG/s-m-r/issues"
+  },
+  "engines": {
+    "node": ">=12.0.0",
+    "npm": ">=6.0.0"
+  },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "Safari >= 12",
+    "Edge >= 79"
+  ],
+  "devDependencies": {},
+  "dependencies": {},
+  "files": [
+    "index.html",
+    "userguide.md",
+    "README_WEB.md",
+    "css/",
+    "js/",
+    "assets/"
+  ],
+  "config": {
+    "port": 8000,
+    "host": "localhost"
+  },
+  "game": {
+    "title": "Scotty Mason's Revenge",
+    "subtitle": "Real-Time Strategy",
+    "version": "1.0.0",
+    "genre": "Real-Time Strategy",
+    "platform": "Web",
+    "requirements": {
+      "browser": "Modern browser with JavaScript support",
+      "storage": "10MB local storage",
+      "memory": "2GB RAM recommended",
+      "resolution": "1024x768 minimum"
+    },
+    "features": [
+      "4 unique factions",
+      "Campaign mode",
+      "Skirmish battles",
+      "Base building",
+      "Resource management",
+      "Real-time combat",
+      "Unit veterancy system",
+      "Cross-platform compatibility"
+    ],
+    "factions": [
+      "Allied Forces",
+      "Soviet Union", 
+      "Rising Sun Empire",
+      "European Confederation"
+    ]
+  },
+  "development": {
+    "status": "Complete",
+    "started": "2024",
+    "completed": "2024",
+    "languages": ["JavaScript", "HTML", "CSS"],
+    "frameworks": ["None - Pure Web Technologies"],
+    "architecture": "Modular ES6 Classes",
+    "rendering": "HTML5 Canvas 2D",
+    "audio": "Web Audio API",
+    "storage": "LocalStorage"
+  }
+}
