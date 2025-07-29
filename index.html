@@ -219,21 +219,43 @@
     </div>
 
     <!-- Game Scripts -->
-    <script src="js/core/GameEngine.js"></script>
+    <!-- Load utilities first -->
+    <script src="js/utils/Utils.js"></script>
+    
+    <!-- Load base classes before anything that extends them -->
+    <script src="js/game/GameObject.js"></script>
+    <script src="js/game/Unit.js"></script>
+    <script src="js/game/Building.js"></script>
+    
+    <!-- Load core systems -->
     <script src="js/core/ResourceManager.js"></script>
     <script src="js/core/AudioManager.js"></script>
     <script src="js/core/InputManager.js"></script>
     <script src="js/core/Renderer.js"></script>
+    
+    <!-- Load game systems that use the classes -->
     <script src="js/systems/UnitManager.js"></script>
     <script src="js/systems/BuildingManager.js"></script>
     <script src="js/systems/FactionManager.js"></script>
     <script src="js/systems/CampaignManager.js"></script>
-    <script src="js/game/Unit.js"></script>
-    <script src="js/game/Building.js"></script>
-    <script src="js/game/GameObject.js"></script>
+    
+    <!-- Load UI system -->
     <script src="js/ui/UIManager.js"></script>
-    <script src="js/ui/MenuSystem.js"></script>
-    <script src="js/utils/Utils.js"></script>
+    
+    <!-- Load game engine that orchestrates everything -->
+    <script src="js/core/GameEngine.js"></script>
+    
+    <!-- Load main initialization script last -->
     <script src="js/main.js"></script>
+    
+    <!-- Global functions for HTML onclick handlers -->
+    <script>
+        // Global closeModal function for HTML onclick handlers
+        function closeModal() {
+            if (window.gameEngine && window.gameEngine.uiManager) {
+                window.gameEngine.uiManager.closeModal();
+            }
+        }
+    </script>
 </body>
 </html>
