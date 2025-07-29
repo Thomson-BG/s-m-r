@@ -1,0 +1,531 @@
+/* UI Component Specific Styles */
+
+/* Enhanced Button Animations */
+.menu-button, .action-button, .control-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-button::after,
+.action-button::after,
+.control-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 170, 0, 0.3) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.menu-button:active::after,
+.action-button:active::after,
+.control-button:active::after {
+    width: 200px;
+    height: 200px;
+    transition: width 0.1s ease, height 0.1s ease;
+}
+
+/* Health Bars */
+.health-bar {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #333;
+    border-radius: 2px;
+}
+
+.health-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff0000, #ffaa00, #00ff00);
+    border-radius: 1px;
+    transition: width 0.3s ease;
+}
+
+/* Unit Selection Indicators */
+.selection-indicator {
+    position: absolute;
+    border: 2px solid #ffaa00;
+    border-radius: 50%;
+    animation: selection-pulse 1.5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes selection-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+/* Building Construction Animation */
+.construction-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 170, 0, 0.1),
+        rgba(255, 170, 0, 0.1) 10px,
+        transparent 10px,
+        transparent 20px
+    );
+    animation: construction-scroll 2s linear infinite;
+}
+
+@keyframes construction-scroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 20px 20px; }
+}
+
+/* Damage Flash Effect */
+.damage-flash {
+    animation: damage-flash 0.3s ease-out;
+}
+
+@keyframes damage-flash {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(2) hue-rotate(0deg) saturate(2); }
+}
+
+/* Explosion Effect */
+.explosion {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle, #ffaa00 0%, #ff0000 50%, transparent 100%);
+    border-radius: 50%;
+    animation: explosion 0.5s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes explosion {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Projectile Trail */
+.projectile-trail {
+    position: absolute;
+    width: 2px;
+    height: 20px;
+    background: linear-gradient(0deg, transparent, #ffaa00);
+    border-radius: 1px;
+    animation: projectile-fade 0.5s ease-out forwards;
+}
+
+@keyframes projectile-fade {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 170, 0, 0.3);
+    border-top: 3px solid #ffaa00;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 1rem auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Notification System */
+.notification {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid #ffaa00;
+    border-radius: 5px;
+    padding: 1rem;
+    color: #fff;
+    font-size: 0.9rem;
+    max-width: 300px;
+    z-index: 1500;
+    animation: notification-slide 0.3s ease-out;
+}
+
+@keyframes notification-slide {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.notification.success {
+    border-color: #00ff00;
+}
+
+.notification.error {
+    border-color: #ff0000;
+}
+
+.notification.warning {
+    border-color: #ffaa00;
+}
+
+/* Progress Bars */
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 0.5rem 0;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff0000, #ffaa00);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    animation: progress-pulse 2s ease-in-out infinite;
+}
+
+@keyframes progress-pulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+}
+
+/* Context Menu */
+.context-menu {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.95);
+    border: 1px solid #ffaa00;
+    border-radius: 3px;
+    padding: 0.5rem 0;
+    z-index: 1200;
+    min-width: 150px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+}
+
+.context-menu-item {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    color: #ccc;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.context-menu-item:hover {
+    background: rgba(255, 170, 0, 0.2);
+    color: #ffaa00;
+}
+
+.context-menu-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.context-menu-separator {
+    height: 1px;
+    background: #333;
+    margin: 0.3rem 0;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #111;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #666;
+}
+
+/* Drag and Drop */
+.dragging {
+    opacity: 0.7;
+    transform: scale(0.95);
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+.drop-zone {
+    border: 2px dashed #ffaa00;
+    background: rgba(255, 170, 0, 0.1);
+    animation: drop-zone-pulse 1s ease-in-out infinite;
+}
+
+@keyframes drop-zone-pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+}
+
+/* Tabbed Interface */
+.tab-container {
+    border-bottom: 1px solid #333;
+    margin-bottom: 1rem;
+}
+
+.tab-buttons {
+    display: flex;
+    gap: 0;
+}
+
+.tab-button {
+    padding: 0.8rem 1.5rem;
+    background: #111;
+    border: 1px solid #333;
+    border-bottom: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.tab-button:first-child {
+    border-radius: 5px 0 0 0;
+}
+
+.tab-button:last-child {
+    border-radius: 0 5px 0 0;
+}
+
+.tab-button.active {
+    background: #222;
+    color: #ffaa00;
+    border-bottom: 2px solid #ffaa00;
+}
+
+.tab-button:hover:not(.active) {
+    background: #1a1a1a;
+    color: #ddd;
+}
+
+.tab-content {
+    display: none;
+    animation: tab-fade-in 0.3s ease-out;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes tab-fade-in {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: #ccc;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.5rem;
+    background: #222;
+    border: 1px solid #444;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #ffaa00;
+    box-shadow: 0 0 5px rgba(255, 170, 0, 0.3);
+}
+
+/* Checkbox and Radio Buttons */
+.checkbox-group,
+.radio-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.checkbox-group input[type="checkbox"],
+.radio-group input[type="radio"] {
+    width: auto;
+    accent-color: #ffaa00;
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.color-primary { color: #ffaa00; }
+.color-danger { color: #ff0000; }
+.color-success { color: #00ff00; }
+.color-warning { color: #ffaa00; }
+.color-muted { color: #666; }
+
+.bg-primary { background-color: #ffaa00; }
+.bg-danger { background-color: #ff0000; }
+.bg-success { background-color: #00ff00; }
+.bg-dark { background-color: #111; }
+
+.border-primary { border-color: #ffaa00; }
+.border-danger { border-color: #ff0000; }
+.border-success { border-color: #00ff00; }
+
+.shadow-glow { box-shadow: 0 0 20px rgba(255, 170, 0, 0.3); }
+.shadow-red { box-shadow: 0 0 20px rgba(255, 0, 0, 0.3); }
+.shadow-green { box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); }
+
+.fade-in {
+    animation: fade-in 0.5s ease-out;
+}
+
+@keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.slide-up {
+    animation: slide-up 0.3s ease-out;
+}
+
+@keyframes slide-up {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Game-specific UI Elements */
+.unit-icon {
+    width: 32px;
+    height: 32px;
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: #ccc;
+}
+
+.building-icon {
+    width: 48px;
+    height: 48px;
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: #ccc;
+}
+
+.tech-tree-node {
+    width: 60px;
+    height: 60px;
+    background: #222;
+    border: 2px solid #444;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.tech-tree-node:hover {
+    background: #333;
+    border-color: #ffaa00;
+    transform: scale(1.05);
+}
+
+.tech-tree-node.available {
+    border-color: #00ff00;
+}
+
+.tech-tree-node.researched {
+    background: #004400;
+    border-color: #00ff00;
+}
+
+.tech-tree-node.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive Helpers for Mobile */
+@media (max-width: 768px) {
+    .mobile-hidden {
+        display: none !important;
+    }
+    
+    .mobile-full-width {
+        width: 100% !important;
+    }
+    
+    .mobile-stack {
+        flex-direction: column !important;
+    }
+    
+    .mobile-center {
+        text-align: center !important;
+    }
+}
