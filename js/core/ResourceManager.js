@@ -155,6 +155,7 @@ class ResourceManager {
         
         if (availablePower !== this.power) {
             this.power = availablePower;
+            console.log('🔋 Power status updated:', this.power, '/', this.maxPower, '(used:', this.powerUsed, ')');
             this.emit('powerChanged', this.power, this.maxPower);
         }
         

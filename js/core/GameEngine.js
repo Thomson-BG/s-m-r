@@ -291,6 +291,17 @@ class GameEngine {
             faction: this.selectedFaction
         });
         
+        // WORKAROUND: Manually add to renderer since events aren't working
+        console.log('🔧 Manually adding objects to renderer as workaround...');
+        if (constructionYard) this.renderer.addBuilding(constructionYard);
+        if (powerPlant) this.renderer.addBuilding(powerPlant);
+        if (refinery) this.renderer.addBuilding(refinery);
+        if (engineer) this.renderer.addUnit(engineer);
+        if (harvester) this.renderer.addUnit(harvester);
+        
+        // Force power update
+        this.uiManager.updatePowerDisplay(100, 100);
+        
         console.log('🏗️ Starting assets placed');
     }
     
@@ -572,11 +583,13 @@ class GameEngine {
         });
         
         this.resourceManager.on('powerChanged', (power, maxPower) => {
+            console.log('🔗 GameEngine received powerChanged event:', power, '/', maxPower);
             this.uiManager.updatePowerDisplay(power, maxPower);
         });
         
         // Unit events
         this.unitManager.on('unitCreated', (unit) => {
+            console.log('🔗 GameEngine received unitCreated event for:', unit.type);
             this.renderer.addUnit(unit);
         });
         
@@ -586,6 +599,7 @@ class GameEngine {
         
         // Building events
         this.buildingManager.on('buildingCreated', (building) => {
+            console.log('🔗 GameEngine received buildingCreated event for:', building.type);
             this.renderer.addBuilding(building);
         });
         

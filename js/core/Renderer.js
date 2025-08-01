@@ -1412,6 +1412,7 @@ class Renderer {
      * Add a unit to render
      */
     addUnit(unit) {
+        console.log('🎨 Adding unit to renderer:', unit.type, 'at', unit.x, unit.y);
         this.layers.units.push(unit);
     }
     
@@ -1429,6 +1430,7 @@ class Renderer {
      * Add a building to render
      */
     addBuilding(building) {
+        console.log('🏗️ Adding building to renderer:', building.type, 'at', building.x, building.y);
         this.layers.buildings.push(building);
     }
     
