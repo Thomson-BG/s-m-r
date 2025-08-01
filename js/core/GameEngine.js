@@ -254,8 +254,8 @@ class GameEngine {
             faction: this.selectedFaction
         });
         
-        // Place refinery
-        const refinery = this.buildingManager.createBuilding('refinery', {
+        // Place ore refinery
+        const refinery = this.buildingManager.createBuilding('ore_refinery', {
             x: 450,
             y: 250,
             faction: this.selectedFaction
@@ -268,7 +268,7 @@ class GameEngine {
             faction: this.selectedFaction
         });
         
-        const harvester = this.unitManager.createUnit('harvester', {
+        const harvester = this.unitManager.createUnit('chrono_miner', {
             x: 470,
             y: 280,
             faction: this.selectedFaction

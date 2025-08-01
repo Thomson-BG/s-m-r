@@ -24,6 +24,7 @@ class FactionManager {
      */
     loadFactions() {
         const factionDefinitions = [
+            // Command & Conquer: Red Alert 2 - Allied Forces
             {
                 id: 'allies',
                 name: 'Allied Forces',
@@ -33,11 +34,11 @@ class FactionManager {
                 startingBuildings: {
                     'construction_yard': 1,
                     'power_plant': 1,
-                    'refinery': 1
+                    'ore_refinery': 1
                 },
                 startingUnits: {
                     'engineer': 1,
-                    'harvester': 1
+                    'chrono_miner': 1
                 },
                 startingResources: {
                     credits: 5000,
@@ -47,23 +48,40 @@ class FactionManager {
                     constructionSpeed: 1.0,
                     unitTrainingSpeed: 1.0,
                     techCost: 1.0,
-                    repairSpeed: 1.2
+                    repairSpeed: 1.2,
+                    chronoTech: true
                 },
-                superweapon: 'chronosphere',
+                superweapons: ['chronosphere', 'weather_storm'],
                 theme: {
                     primaryColor: '#0066cc',
                     secondaryColor: '#004499',
                     accentColor: '#66aaff'
                 },
                 units: [
-                    'engineer', 'gi', 'tank', 'harvester', 'helicopter', 'navy_seal'
+                    // Infantry
+                    'gi', 'engineer', 'guardian_gi', 'rocketeer', 'navy_seal', 'spy', 'chrono_legionnaire', 'tanya',
+                    // Vehicles
+                    'grizzly_tank', 'ifv', 'mirage_tank', 'battle_fortress', 'prism_tank', 'chrono_miner',
+                    // Aircraft
+                    'harrier', 'black_eagle',
+                    // Naval
+                    'destroyer', 'aegis_cruiser', 'aircraft_carrier', 'dolphin'
                 ],
                 buildings: [
-                    'construction_yard', 'power_plant', 'refinery', 'barracks', 
-                    'war_factory', 'tech_center', 'defense_turret'
+                    'construction_yard', 'power_plant', 'ore_refinery', 'barracks', 'war_factory', 
+                    'naval_yard', 'airforce_command', 'service_depot', 'ore_purifier', 'battle_lab',
+                    'spy_satellite', 'chronosphere', 'weather_controller', 'patriot_missile', 
+                    'prism_tower', 'gap_generator'
                 ],
-                lore: 'The Allied Forces represent the free nations of the world, united in their fight against tyranny. They excel in advanced technology and precision strikes.'
+                techTree: {
+                    tier1: ['barracks', 'war_factory', 'power_plant', 'ore_refinery'],
+                    tier2: ['naval_yard', 'airforce_command', 'service_depot'],
+                    tier3: ['battle_lab', 'spy_satellite'],
+                    tier4: ['chronosphere', 'weather_controller']
+                },
+                lore: 'The Allied Forces represent the free nations of the world. Armed with advanced chronoshift technology, weather control, and prism weaponry, they fight to preserve democracy and freedom.'
             },
+            // Command & Conquer: Red Alert 2 - Soviet Union
             {
                 id: 'soviet',
                 name: 'Soviet Union',
@@ -72,12 +90,12 @@ class FactionManager {
                 playable: true,
                 startingBuildings: {
                     'construction_yard': 1,
-                    'power_plant': 1,
-                    'refinery': 1
+                    'tesla_reactor': 1,
+                    'ore_refinery': 1
                 },
                 startingUnits: {
                     'engineer': 1,
-                    'harvester': 1
+                    'war_miner': 1
                 },
                 startingResources: {
                     credits: 5000,
@@ -87,37 +105,54 @@ class FactionManager {
                     constructionSpeed: 0.8,
                     unitTrainingSpeed: 1.2,
                     techCost: 1.1,
-                    armorBonus: 1.3
+                    armorBonus: 1.3,
+                    teslaTech: true
                 },
-                superweapon: 'nuclear_missile',
+                superweapons: ['nuclear_missile', 'iron_curtain'],
                 theme: {
                     primaryColor: '#cc0000',
                     secondaryColor: '#990000',
                     accentColor: '#ff4444'
                 },
                 units: [
-                    'engineer', 'conscript', 'tank', 'harvester', 'helicopter', 'tesla_trooper'
+                    // Infantry
+                    'conscript', 'engineer', 'tesla_trooper', 'flak_trooper', 'crazy_ivan', 'yuri', 'boris',
+                    // Vehicles  
+                    'rhino_tank', 'flak_track', 'v3_launcher', 'apocalypse_tank', 'terror_drone', 'war_miner',
+                    // Aircraft
+                    'kirov_airship',
+                    // Naval
+                    'typhoon_sub', 'sea_scorpion', 'giant_squid'
                 ],
                 buildings: [
-                    'construction_yard', 'power_plant', 'refinery', 'barracks',
-                    'war_factory', 'tech_center', 'defense_turret'
+                    'construction_yard', 'tesla_reactor', 'ore_refinery', 'barracks', 'war_factory',
+                    'naval_yard', 'radar_tower', 'service_depot', 'battle_lab', 'nuclear_reactor',
+                    'nuclear_silo', 'iron_curtain', 'cloning_vats', 'tesla_coil', 'flak_cannon',
+                    'psychic_sensor'
                 ],
-                lore: 'The Soviet Union relies on overwhelming firepower and resilient armor. Their units may be slower but pack devastating punch.'
+                techTree: {
+                    tier1: ['barracks', 'war_factory', 'tesla_reactor', 'ore_refinery'],
+                    tier2: ['naval_yard', 'radar_tower', 'service_depot'],
+                    tier3: ['battle_lab', 'nuclear_reactor'],
+                    tier4: ['nuclear_silo', 'iron_curtain', 'cloning_vats']
+                },
+                lore: 'The Soviet Union commands the Red Army with overwhelming firepower, tesla technology, and nuclear weapons. Their heavy armor and devastating weapons crush all opposition.'
             },
+            // Command & Conquer: Red Alert 2 - Yuri\'s Faction (Yuri\'s Revenge Expansion)
             {
-                id: 'empire',
-                name: 'Rising Sun Empire',
-                color: '#cc6600',
-                description: 'Advanced robotics and psionics',
+                id: 'yuri',
+                name: 'Yuri\'s Army',
+                color: '#9900cc',
+                description: 'Psychic warfare and mind control',
                 playable: true,
                 startingBuildings: {
                     'construction_yard': 1,
-                    'power_plant': 1,
-                    'refinery': 1
+                    'bio_reactor': 1,
+                    'slave_miner': 1
                 },
                 startingUnits: {
                     'engineer': 1,
-                    'harvester': 1
+                    'slave_miner': 1
                 },
                 startingResources: {
                     credits: 4500,
@@ -127,68 +162,45 @@ class FactionManager {
                     constructionSpeed: 1.1,
                     unitTrainingSpeed: 0.9,
                     techCost: 0.9,
-                    energyEfficiency: 1.2
+                    psychicPower: true,
+                    mindControl: true
                 },
-                superweapon: 'psionic_decimator',
+                superweapons: ['psychic_dominator', 'genetic_mutator'],
                 theme: {
-                    primaryColor: '#cc6600',
-                    secondaryColor: '#994400',
-                    accentColor: '#ff9933'
+                    primaryColor: '#9900cc',
+                    secondaryColor: '#6600aa',
+                    accentColor: '#cc33ff'
                 },
                 units: [
-                    'engineer', 'warrior', 'tank', 'harvester', 'helicopter', 'psychic'
+                    // Infantry
+                    'initiate', 'engineer', 'brute', 'yuri_clone', 'yuri_prime',
+                    // Vehicles
+                    'lasher_tank', 'gattling_tank', 'magnetron', 'mastermind', 'floating_disc', 'slave_miner',
+                    // Aircraft  
+                    'boomer_sub',
+                    // Naval
+                    'boomer_sub'
                 ],
                 buildings: [
-                    'construction_yard', 'power_plant', 'refinery', 'barracks',
-                    'war_factory', 'tech_center', 'defense_turret'
+                    'construction_yard', 'bio_reactor', 'slave_miner', 'barracks', 'war_factory',
+                    'sub_pen', 'radar_tower', 'grinder', 'battle_lab', 'cloning_vats',
+                    'psychic_dominator', 'genetic_mutator', 'gattling_cannon', 'psychic_tower',
+                    'tank_bunker'
                 ],
-                lore: 'The Rising Sun Empire combines ancient traditions with cutting-edge technology, utilizing psychic powers and advanced robotics.'
+                techTree: {
+                    tier1: ['barracks', 'war_factory', 'bio_reactor', 'slave_miner'],
+                    tier2: ['sub_pen', 'radar_tower', 'grinder'],
+                    tier3: ['battle_lab', 'cloning_vats'],
+                    tier4: ['psychic_dominator', 'genetic_mutator']
+                },
+                lore: 'Yuri\'s psychic army uses mind control technology, genetic manipulation, and floating disc aircraft. Through psychic domination, Yuri seeks to control all minds on Earth.'
             },
-            {
-                id: 'confederation',
-                name: 'European Confederation',
-                color: '#9966cc',
-                description: 'Balanced defense specialists',
-                playable: true,
-                startingBuildings: {
-                    'construction_yard': 1,
-                    'power_plant': 1,
-                    'refinery': 1
-                },
-                startingUnits: {
-                    'engineer': 1,
-                    'harvester': 1
-                },
-                startingResources: {
-                    credits: 5200,
-                    power: 90
-                },
-                bonuses: {
-                    constructionSpeed: 0.9,
-                    unitTrainingSpeed: 1.0,
-                    techCost: 1.0,
-                    defenseBonus: 1.4
-                },
-                superweapon: 'weather_controller',
-                theme: {
-                    primaryColor: '#9966cc',
-                    secondaryColor: '#6644aa',
-                    accentColor: '#bb88ff'
-                },
-                units: [
-                    'engineer', 'peacekeeper', 'tank', 'harvester', 'helicopter', 'guardian'
-                ],
-                buildings: [
-                    'construction_yard', 'power_plant', 'refinery', 'barracks',
-                    'war_factory', 'tech_center', 'defense_turret'
-                ],
-                lore: 'The European Confederation focuses on defensive strategies and maintaining peace through superior fortifications and tactical awareness.'
-            },
+            // Neutral/Civilian faction
             {
                 id: 'neutral',
                 name: 'Neutral',
                 color: '#888888',
-                description: 'Non-aligned forces',
+                description: 'Civilian and neutral forces',
                 playable: false,
                 startingBuildings: {},
                 startingUnits: {},
@@ -197,15 +209,16 @@ class FactionManager {
                     power: 0
                 },
                 bonuses: {},
-                superweapon: null,
+                superweapons: [],
                 theme: {
                     primaryColor: '#888888',
                     secondaryColor: '#666666',
                     accentColor: '#aaaaaa'
                 },
-                units: [],
-                buildings: [],
-                lore: 'Neutral forces and civilian structures.'
+                units: ['civilian', 'technician'],
+                buildings: ['civilian_building', 'tech_outpost', 'oil_derrick', 'airport'],
+                techTree: {},
+                lore: 'Neutral forces, civilians, and capturable structures found across the battlefield.'
             }
         ];
         
