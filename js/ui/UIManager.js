@@ -385,6 +385,9 @@ class UIManager {
      */
     updatePowerDisplay(power, maxPower) {
         if (this.elements.powerDisplay) {
+            // Debug logging
+            console.log('🔋 Power display update:', power, maxPower);
+            
             // Ensure we have valid numbers
             const currentPower = isNaN(power) ? 0 : Math.floor(power);
             const totalPower = isNaN(maxPower) ? 0 : Math.floor(maxPower);

@@ -217,6 +217,8 @@ class GameEngine {
      * Initialize the game world
      */
     initializeGameWorld(settings = {}) {
+        console.log('🌍 initializeGameWorld called with settings:', settings);
+        
         // Reset all systems
         this.resourceManager.reset();
         this.unitManager.reset();
@@ -237,7 +239,8 @@ class GameEngine {
         this.placeStartingAssets();
         
         // Create enemy base for skirmish mode
-        if (this.currentState === 'playing' && !this.campaignManager.currentMission) {
+        console.log('📍 Debug - State:', this.currentState, 'Mission:', this.campaignManager.currentMission);
+        if (this.currentState === 'playing' && this.campaignManager.currentMission === null) {
             console.log('📍 Attempting to create enemy base...');
             this.createEnemyBase();
         } else {

@@ -1448,8 +1448,8 @@ class Renderer {
     clear() {
         this.context.clearRect(0, 0, this.width, this.height);
         
-        // Fill with background color
-        this.context.fillStyle = '#001100';
+        // Fill with a visible background color to test if canvas is working
+        this.context.fillStyle = '#003300'; // Dark green to test visibility
         this.context.fillRect(0, 0, this.width, this.height);
     }
     
