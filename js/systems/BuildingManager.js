@@ -600,15 +600,6 @@ class BuildingManager {
                 description: 'Allows airborne unit deployment when captured'
             }
         ];
-                width: 32,
-                height: 32,
-                canBuild: [],
-                damage: 100,
-                range: 200,
-                isDefense: true,
-                description: 'Anti-air and anti-ground defense'
-            }
-        ];
         
         buildingDefinitions.forEach(def => {
             this.buildingTypes.set(def.type, def);
