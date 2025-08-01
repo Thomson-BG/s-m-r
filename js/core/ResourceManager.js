@@ -189,6 +189,10 @@ class ResourceManager {
      * Set power (for initialization)
      */
     setPower(current, max) {
+        // Handle null/undefined values
+        current = current || 0;
+        max = max || 0;
+        
         this.power = Math.max(0, current);
         this.maxPower = Math.max(0, max);
         this.powerUsed = Math.max(0, this.maxPower - this.power);

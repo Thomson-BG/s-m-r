@@ -80,15 +80,36 @@ class Renderer {
      * Resize canvas to fit container
      */
     resize() {
+        if (!this.canvas) return;
+        
+        // Get the parent element bounds
         const rect = this.canvas.parentElement.getBoundingClientRect();
-        this.width = rect.width;
-        this.height = rect.height;
+        
+        // If parent has no dimensions (e.g., hidden), use fallback dimensions
+        if (rect.width <= 0 || rect.height <= 0) {
+            // Calculate grid area dimensions based on window size
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            // Account for grid layout: 250px + 1fr + 250px columns, 60px + 1fr + 200px rows
+            this.width = Math.max(500, windowWidth - 500); // Subtract left and right panels
+            this.height = Math.max(400, windowHeight - 260); // Subtract top hud and bottom panel
+        } else {
+            this.width = rect.width;
+            this.height = rect.height;
+        }
+        
+        // Ensure minimum dimensions
+        this.width = Math.max(320, this.width);
+        this.height = Math.max(240, this.height);
         
         this.canvas.width = this.width;
         this.canvas.height = this.height;
         
         // Update camera bounds
         this.updateCameraBounds();
+        
+        console.log(`🎨 Canvas resized to ${this.width}x${this.height}`);
     }
     
     /**
