@@ -385,7 +385,10 @@ class UIManager {
      */
     updatePowerDisplay(power, maxPower) {
         if (this.elements.powerDisplay) {
-            this.elements.powerDisplay.textContent = `${Math.floor(power)}/${Math.floor(maxPower)}`;
+            // Ensure we have valid numbers
+            const currentPower = isNaN(power) ? 0 : Math.floor(power);
+            const totalPower = isNaN(maxPower) ? 0 : Math.floor(maxPower);
+            this.elements.powerDisplay.textContent = `${currentPower}/${totalPower}`;
         }
     }
     
