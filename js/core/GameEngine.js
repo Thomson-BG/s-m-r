@@ -171,8 +171,9 @@ class GameEngine {
         // Initialize game world
         this.initializeGameWorld();
         
-        // Start first mission
-        this.campaignManager.startCampaign(faction);
+        // Start first mission - map faction to campaign ID
+        const campaignId = faction + '_campaign';
+        this.campaignManager.startCampaign(campaignId);
         
         // Start game loop
         this.startGameLoop();
@@ -222,7 +223,8 @@ class GameEngine {
         
         // Set initial resources
         this.resourceManager.setCredits(settings.startingCredits || 5000);
-        this.resourceManager.setPower(settings.startingPower || 100, settings.startingPower || 100);
+        const startingPower = settings.startingPower || 100;
+        this.resourceManager.setPower(startingPower, startingPower);
         
         // Initialize map
         this.renderer.initializeMap(this.mapSize);
@@ -254,8 +256,8 @@ class GameEngine {
             faction: this.selectedFaction
         });
         
-        // Place refinery
-        const refinery = this.buildingManager.createBuilding('refinery', {
+        // Place ore refinery
+        const refinery = this.buildingManager.createBuilding('ore_refinery', {
             x: 450,
             y: 250,
             faction: this.selectedFaction
@@ -268,7 +270,7 @@ class GameEngine {
             faction: this.selectedFaction
         });
         
-        const harvester = this.unitManager.createUnit('harvester', {
+        const harvester = this.unitManager.createUnit('chrono_miner', {
             x: 470,
             y: 280,
             faction: this.selectedFaction
@@ -345,7 +347,12 @@ class GameEngine {
         
         // For campaign: check mission objectives
         if (this.campaignManager.currentMission) {
-            return this.campaignManager.currentMission.isCompleted();
+            // Check if all required objectives are completed
+            const objectives = this.campaignManager.objectives || [];
+            const requiredObjectives = objectives.filter(obj => obj.required);
+            const completedRequiredObjectives = requiredObjectives.filter(obj => obj.completed);
+            
+            return requiredObjectives.length > 0 && completedRequiredObjectives.length === requiredObjectives.length;
         }
         
         // For skirmish: check if all enemies are eliminated
