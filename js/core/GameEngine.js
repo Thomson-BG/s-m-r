@@ -299,8 +299,8 @@ class GameEngine {
         if (engineer) this.renderer.addUnit(engineer);
         if (harvester) this.renderer.addUnit(harvester);
         
-        // Force power update
-        this.uiManager.updatePowerDisplay(100, 100);
+        // Force power update with correct values
+        this.uiManager.updatePowerDisplay(this.resourceManager.getPower(), this.resourceManager.getMaxPower());
         
         console.log('🏗️ Starting assets placed');
     }
@@ -366,6 +366,17 @@ class GameEngine {
             y: baseY + 80,
             faction: enemyFaction
         });
+        
+        // WORKAROUND: Manually add enemy units to renderer
+        console.log('🔧 Manually adding enemy base to renderer...');
+        if (enemyConstruction) this.renderer.addBuilding(enemyConstruction);
+        if (enemyPower) this.renderer.addBuilding(enemyPower);
+        if (enemyRefinery) this.renderer.addBuilding(enemyRefinery);
+        if (enemyBarracks) this.renderer.addBuilding(enemyBarracks);
+        if (enemyEngineer) this.renderer.addUnit(enemyEngineer);
+        if (enemyHarvester) this.renderer.addUnit(enemyHarvester);
+        if (conscript1) this.renderer.addUnit(conscript1);
+        if (conscript2) this.renderer.addUnit(conscript2);
         
         console.log('🔴 Enemy base created');
     }
