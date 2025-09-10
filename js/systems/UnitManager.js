@@ -713,6 +713,195 @@ class UnitManager {
                 isNavalUnit: true,
                 grabAndCrush: true,
                 description: 'Genetically enhanced squid that crushes ships'
+            },
+
+            // ===== YURI UNITS =====
+            // Yuri Infantry
+            {
+                type: 'initiate',
+                name: 'Initiate',
+                faction: 'yuri',
+                cost: 150,
+                buildTime: 5,
+                health: 120,
+                speed: 55,
+                damage: 30,
+                range: 80,
+                width: 16,
+                height: 16,
+                armor: 'none',
+                psychicDamage: true,
+                description: 'Basic psychic infantry. Effective against organic targets.'
+            },
+            {
+                type: 'brute',
+                name: 'Brute',
+                faction: 'yuri',
+                cost: 500,
+                buildTime: 10,
+                health: 400,
+                speed: 60,
+                damage: 150,
+                range: 10, // Melee
+                width: 20,
+                height: 20,
+                armor: 'heavy',
+                crushImmune: true,
+                description: 'Genetically engineered giant. Cannot be crushed by vehicles.'
+            },
+            {
+                type: 'yuri_clone',
+                name: 'Yuri Clone',
+                faction: 'yuri',
+                cost: 800,
+                buildTime: 20,
+                health: 100,
+                speed: 70,
+                damage: 0,
+                range: 120,
+                width: 16,
+                height: 16,
+                armor: 'none',
+                mindControl: true,
+                description: 'Psychic operative who can control a single enemy unit.'
+            },
+            {
+                type: 'yuri_prime',
+                name: 'Yuri Prime',
+                faction: 'yuri',
+                cost: 2500,
+                buildTime: 40,
+                health: 150,
+                speed: 75,
+                damage: 0,
+                range: 150,
+                width: 16,
+                height: 16,
+                armor: 'none',
+                isHero: true,
+                mindControl: true,
+                mindControlCapacity: 3,
+                description: 'Yuri himself. Can mind-control multiple units and create psychic shockwaves.'
+            },
+            // Yuri Vehicles
+            {
+                type: 'lasher_tank',
+                name: 'Lasher Tank',
+                faction: 'yuri',
+                cost: 700,
+                buildTime: 16,
+                health: 350,
+                speed: 55,
+                damage: 70,
+                range: 115,
+                width: 24,
+                height: 24,
+                armor: 'medium',
+                description: 'Yuri\'s main battle tank. Reliable and effective.'
+            },
+            {
+                type: 'gattling_tank',
+                name: 'Gattling Tank',
+                faction: 'yuri',
+                cost: 600,
+                buildTime: 14,
+                health: 250,
+                speed: 75,
+                damage: 20, // per shot, fires fast
+                range: 130,
+                width: 20,
+                height: 20,
+                armor: 'light',
+                antiAir: true,
+                rampingDamage: true,
+                description: 'Anti-infantry and anti-air vehicle with a gattling cannon that increases its fire rate over time.'
+            },
+            {
+                type: 'magnetron',
+                name: 'Magnetron',
+                faction: 'yuri',
+                cost: 1000,
+                buildTime: 22,
+                health: 200,
+                speed: 50,
+                damage: 0,
+                range: 180,
+                width: 24,
+                height: 24,
+                armor: 'light',
+                magneticLift: true,
+                description: 'Uses a magnetic beam to lift enemy vehicles and drop them, or pull them closer.'
+            },
+            {
+                type: 'mastermind',
+                name: 'Mastermind',
+                faction: 'yuri',
+                cost: 1750,
+                buildTime: 30,
+                health: 300,
+                speed: 40,
+                damage: 0,
+                range: 200,
+                width: 32,
+                height: 32,
+                armor: 'heavy',
+                mindControl: true,
+                mindControlCapacity: 3,
+                description: 'Large psychic vehicle that can control multiple enemy units at once.'
+            },
+            {
+                type: 'slave',
+                name: 'Slave',
+                faction: 'yuri',
+                cost: 100, // cheap to replace
+                buildTime: 3,
+                health: 200, // surprisingly durable
+                speed: 40,
+                damage: 0,
+                range: 0,
+                width: 16,
+                height: 16,
+                armor: 'none',
+                canHarvest: true,
+                maxOreCapacity: 250, // from RA2 wiki
+                description: 'Expendable worker unit for harvesting ore. Created at the Slave Miner.'
+            },
+            // Yuri Aircraft
+            {
+                type: 'floating_disc',
+                name: 'Floating Disc',
+                faction: 'yuri',
+                cost: 1750,
+                buildTime: 30,
+                health: 400,
+                speed: 80,
+                damage: 100, // weapon against units
+                range: 150,
+                width: 32,
+                height: 32,
+                armor: 'aircraft',
+                isAirUnit: true,
+                powerDrainBeam: true, // special ability
+                description: 'Advanced UFO that can attack ground units or disable power to enemy bases.'
+            },
+            // Yuri Naval
+            {
+                type: 'boomer_sub',
+                name: 'Boomer Submarine',
+                faction: 'yuri',
+                cost: 1500,
+                buildTime: 30,
+                health: 400,
+                speed: 55,
+                damage: 110, // torpedoes
+                range: 130, // torpedoes
+                width: 24,
+                height: 16,
+                armor: 'heavy',
+                isNavalUnit: true,
+                submerged: true,
+                canFireMissiles: true, // ballistic missiles
+                description: 'Yuri\'s submarine. Launches torpedoes against naval targets and ballistic missiles against land targets.'
             }
         ];
         
