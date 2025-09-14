@@ -286,6 +286,25 @@ class Renderer {
         // Cliffs and elevation
         const cliffSprite = this.createAdvancedTerrainSprite('cliff', '#696969', '#556b2f');
         this.sprites.set('cliff', cliffSprite);
+        
+        // New terrain types for enhanced maps
+        const forestSprite = this.createAdvancedTerrainSprite('forest', '#1a3d1a', '#2d5a2d');
+        this.sprites.set('forest', forestSprite);
+        
+        const ruinsSprite = this.createAdvancedTerrainSprite('ruins', '#808080', '#606060');
+        this.sprites.set('ruins', ruinsSprite);
+        
+        const techOutpostSprite = this.createAdvancedTerrainSprite('tech_outpost', '#4a7bd8', '#2a5bb8');
+        this.sprites.set('tech_outpost', techOutpostSprite);
+        
+        const bioLabSprite = this.createAdvancedTerrainSprite('bio_lab', '#9933ff', '#6600cc');
+        this.sprites.set('bio_lab', bioLabSprite);
+        
+        const hospitalSprite = this.createAdvancedTerrainSprite('hospital', '#ffffff', '#cccccc');
+        this.sprites.set('hospital', hospitalSprite);
+        
+        const bankSprite = this.createAdvancedTerrainSprite('bank', '#ffd700', '#b8860b');
+        this.sprites.set('bank', bankSprite);
     }
     
     /**
@@ -415,7 +434,9 @@ class Renderer {
                 accent: '#ffffff',       // White
                 dark: '#1a3b78',         // Dark blue
                 metal: '#8a9bb0',        // Blue-grey metal
-                energy: '#00ffff'        // Cyan for chrono effects
+                energy: '#00ffff',       // Cyan for chrono effects
+                trim: '#c0c0c0',         // Silver trim
+                warning: '#ffaa00'       // Orange warning lights
             },
             soviet: {
                 primary: '#cc0000',      // Soviet red
@@ -423,7 +444,9 @@ class Renderer {
                 accent: '#ffff00',       // Yellow
                 dark: '#880000',         // Dark red
                 metal: '#606060',        // Grey metal
-                energy: '#ff00ff'        // Purple for tesla effects
+                energy: '#ff00ff',       // Purple for tesla effects
+                trim: '#444444',         // Dark trim
+                warning: '#ff6600'       // Red-orange warning
             },
             yuri: {
                 primary: '#6600cc',      // Purple
@@ -431,7 +454,9 @@ class Renderer {
                 accent: '#00ff00',       // Green
                 dark: '#440088',         // Dark purple
                 metal: '#888888',        // Grey metal
-                energy: '#ff00ff'        // Magenta for psychic effects
+                energy: '#ff00ff',       // Magenta for psychic effects
+                trim: '#cccccc',         // Light trim
+                warning: '#ff0080'       // Pink warning
             },
             neutral: {
                 primary: '#666666',      // Grey
@@ -439,7 +464,9 @@ class Renderer {
                 accent: '#cccccc',       // Very light grey
                 dark: '#333333',         // Dark grey
                 metal: '#888888',        // Metal grey
-                energy: '#ffffff'        // White
+                energy: '#ffffff',       // White
+                trim: '#aaaaaa',         // Medium trim
+                warning: '#ffcc00'       // Yellow warning
             }
         };
         
@@ -454,23 +481,88 @@ class Renderer {
         ctx.fillStyle = colors.primary;
         ctx.fillRect(4, 4, size - 8, size - 8);
         
-        // Construction crane
-        ctx.strokeStyle = colors.metal;
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(size * 0.2, size * 0.8);
-        ctx.lineTo(size * 0.2, size * 0.2);
-        ctx.lineTo(size * 0.7, size * 0.2);
-        ctx.stroke();
+        // Faction-specific architectural details
+        if (faction === 'allies') {
+            // Allied: Clean, angular design with chrome details
+            ctx.fillStyle = colors.secondary;
+            ctx.fillRect(8, 8, size - 16, 12);
+            ctx.fillRect(8, size - 20, size - 16, 12);
+            
+            // Chrome accents
+            ctx.fillStyle = colors.trim;
+            ctx.fillRect(6, 6, size - 12, 3);
+            ctx.fillRect(6, size - 9, size - 12, 3);
+            
+            // Construction crane (sleek design)
+            ctx.strokeStyle = colors.metal;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(size * 0.2, size * 0.8);
+            ctx.lineTo(size * 0.2, size * 0.2);
+            ctx.lineTo(size * 0.7, size * 0.2);
+            ctx.stroke();
+            
+            // Allied star logo
+            this.drawAlliedStar(ctx, size * 0.5, size * 0.5, 8, colors.accent);
+            
+        } else if (faction === 'soviet') {
+            // Soviet: Heavy, industrial design with red accents
+            ctx.fillStyle = colors.secondary;
+            ctx.fillRect(6, 6, size - 12, size - 12);
+            
+            // Industrial panels
+            ctx.fillStyle = colors.dark;
+            for (let i = 0; i < 3; i++) {
+                ctx.fillRect(10 + i * 8, 10, 6, size - 20);
+            }
+            
+            // Heavy construction equipment
+            ctx.strokeStyle = colors.metal;
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(size * 0.15, size * 0.85);
+            ctx.lineTo(size * 0.15, size * 0.15);
+            ctx.lineTo(size * 0.75, size * 0.15);
+            ctx.stroke();
+            
+            // Soviet hammer and sickle
+            this.drawSovietSymbol(ctx, size * 0.5, size * 0.6, 6, colors.accent);
+            
+        } else if (faction === 'yuri') {
+            // Yuri: Organic, psychic design with purple energy
+            ctx.fillStyle = colors.secondary;
+            
+            // Organic rounded structure
+            ctx.beginPath();
+            ctx.roundRect(6, 6, size - 12, size - 12, 8);
+            ctx.fill();
+            
+            // Psychic energy nodes
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                const x = size / 2 + Math.cos(angle) * (size * 0.25);
+                const y = size / 2 + Math.sin(angle) * (size * 0.25);
+                
+                ctx.fillStyle = colors.energy;
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            // Bio-construction apparatus
+            ctx.strokeStyle = colors.energy;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(size * 0.3, size * 0.3, 8, 0, Math.PI);
+            ctx.stroke();
+            
+            // Yuri symbol (psychic eye)
+            this.drawPsychicEye(ctx, size * 0.5, size * 0.5, 8, colors.accent);
+        }
         
-        // Building details
-        ctx.fillStyle = colors.secondary;
-        ctx.fillRect(8, 8, size - 16, 12);
-        ctx.fillRect(8, size - 20, size - 16, 12);
-        
-        // Faction logo area
-        ctx.fillStyle = colors.accent;
-        ctx.fillRect(size * 0.4, size * 0.4, size * 0.2, size * 0.2);
+        // Faction logo area background
+        ctx.fillStyle = colors.dark;
+        ctx.fillRect(size * 0.38, size * 0.38, size * 0.24, size * 0.24);
         
         // Outline
         ctx.strokeStyle = colors.dark;
@@ -565,34 +657,143 @@ class Renderer {
         const centerX = size / 2;
         const centerY = size / 2;
         
-        // Body
-        ctx.fillStyle = colors.primary;
-        ctx.fillRect(centerX - 3, centerY - 2, 6, 8);
+        // Faction-specific body armor and design
+        if (faction === 'allies') {
+            // Allied: Clean, modern military uniform
+            ctx.fillStyle = colors.primary;
+            ctx.fillRect(centerX - 3, centerY - 2, 6, 8);
+            
+            // High-tech armor plating
+            ctx.fillStyle = colors.trim;
+            ctx.fillRect(centerX - 2, centerY - 1, 4, 2);
+            ctx.fillRect(centerX - 2, centerY + 2, 4, 2);
+            
+        } else if (faction === 'soviet') {
+            // Soviet: Heavy, bulky uniform
+            ctx.fillStyle = colors.primary;
+            ctx.fillRect(centerX - 4, centerY - 2, 8, 9);
+            
+            // Heavy armor plates
+            ctx.fillStyle = colors.dark;
+            ctx.fillRect(centerX - 3, centerY - 1, 6, 1);
+            ctx.fillRect(centerX - 3, centerY + 3, 6, 1);
+            
+        } else if (faction === 'yuri') {
+            // Yuri: Organic, bio-tech appearance
+            ctx.fillStyle = colors.primary;
+            ctx.beginPath();
+            ctx.roundRect(centerX - 3, centerY - 2, 6, 8, 2);
+            ctx.fill();
+            
+            // Bio-tech nodes
+            ctx.fillStyle = colors.energy;
+            ctx.beginPath();
+            ctx.arc(centerX - 2, centerY, 1, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(centerX + 2, centerY, 1, 0, Math.PI * 2);
+            ctx.fill();
+        }
         
-        // Head
-        ctx.fillStyle = colors.secondary;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY - 4, 3, 0, Math.PI * 2);
-        ctx.fill();
+        // Head with faction-specific helmet
+        if (faction === 'allies') {
+            // Allied high-tech helmet
+            ctx.fillStyle = colors.secondary;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY - 4, 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Visor
+            ctx.fillStyle = colors.energy;
+            ctx.fillRect(centerX - 2, centerY - 5, 4, 1);
+            
+        } else if (faction === 'soviet') {
+            // Soviet military cap
+            ctx.fillStyle = colors.secondary;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY - 4, 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Red star
+            ctx.fillStyle = colors.accent;
+            ctx.fillRect(centerX - 1, centerY - 5, 2, 2);
+            
+        } else if (faction === 'yuri') {
+            // Yuri psychic helmet
+            ctx.fillStyle = colors.secondary;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY - 4, 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Psychic amplifier
+            ctx.fillStyle = colors.energy;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY - 6, 1, 0, Math.PI * 2);
+            ctx.fill();
+        }
         
-        // Weapon (varies by unit type)
+        // Weapon (varies by unit type and faction)
         ctx.strokeStyle = colors.metal;
         ctx.lineWidth = 2;
-        if (name.includes('gi') || name === 'conscript') {
-            // Rifle
+        
+        if (name.includes('gi')) {
+            // Allied GI rifle
             ctx.beginPath();
             ctx.moveTo(centerX + 3, centerY);
-            ctx.lineTo(centerX + 6, centerY - 2);
+            ctx.lineTo(centerX + 7, centerY - 2);
             ctx.stroke();
+            
+            // Scope
+            ctx.fillStyle = colors.energy;
+            ctx.fillRect(centerX + 5, centerY - 3, 1, 1);
+            
+        } else if (name === 'conscript') {
+            // Soviet AK-47 style rifle
+            ctx.beginPath();
+            ctx.moveTo(centerX + 3, centerY);
+            ctx.lineTo(centerX + 6, centerY - 1);
+            ctx.stroke();
+            
+            // Curved magazine
+            ctx.fillStyle = colors.dark;
+            ctx.fillRect(centerX + 2, centerY + 1, 2, 3);
+            
+        } else if (name === 'initiate') {
+            // Yuri psychic weapon
+            ctx.fillStyle = colors.energy;
+            ctx.fillRect(centerX + 2, centerY - 1, 3, 2);
+            
+            // Energy emanation
+            ctx.strokeStyle = colors.energy;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(centerX + 6, centerY, 2, 0, Math.PI * 2);
+            ctx.stroke();
+            
         } else if (name.includes('rocket') || name === 'flak_trooper') {
             // Rocket launcher
             ctx.fillStyle = colors.dark;
             ctx.fillRect(centerX + 2, centerY - 3, 4, 2);
+            
+            // Rocket tips
+            ctx.fillStyle = colors.warning;
+            ctx.fillRect(centerX + 6, centerY - 2, 1, 1);
         }
         
-        // Faction indicator
+        // Faction indicator on shoulder
         ctx.fillStyle = colors.accent;
-        ctx.fillRect(centerX - 1, centerY + 4, 2, 2);
+        if (faction === 'allies') {
+            // Allied star patch
+            ctx.fillRect(centerX - 1, centerY + 4, 2, 2);
+        } else if (faction === 'soviet') {
+            // Soviet hammer and sickle patch
+            ctx.fillRect(centerX - 1, centerY + 4, 2, 2);
+        } else if (faction === 'yuri') {
+            // Yuri psychic symbol
+            ctx.beginPath();
+            ctx.arc(centerX, centerY + 5, 1, 0, Math.PI * 2);
+            ctx.fill();
+        }
         
         // Outline
         ctx.strokeStyle = colors.dark;
@@ -1176,6 +1377,15 @@ class Renderer {
         
         // Add roads connecting strategic points
         this.addRoadNetwork();
+        
+        // Add faction-specific terrain features
+        this.addFactionTerrainFeatures(mapType);
+        
+        // Add natural landmarks
+        this.addNaturalLandmarks(mapType);
+        
+        // Add tactical chokepoints
+        this.addTacticalChokepoints();
     }
     
     /**
@@ -1773,5 +1983,309 @@ class Renderer {
             cameraY: this.camera.y,
             cameraZoom: this.camera.zoom
         };
+    }
+    
+    /**
+     * Add faction-specific terrain features
+     */
+    addFactionTerrainFeatures(mapType) {
+        // Add Allied tech bunkers
+        this.addTechBunkers(2, 'allies');
+        
+        // Add Soviet industrial complexes
+        this.addIndustrialComplexes(2, 'soviet');
+        
+        // Add Yuri bio-labs
+        this.addBioLabs(1, 'yuri');
+        
+        // Add neutral structures
+        this.addNeutralStructures(mapType);
+    }
+    
+    /**
+     * Add natural landmarks for tactical gameplay
+     */
+    addNaturalLandmarks(mapType) {
+        const landmarks = Math.floor(Math.random() * 3) + 2;
+        
+        for (let i = 0; i < landmarks; i++) {
+            const x = Math.random() * (this.mapWidth - 100) + 50;
+            const y = Math.random() * (this.mapHeight - 100) + 50;
+            
+            if (mapType === 'temperate') {
+                this.addForestPatch(x, y, 80);
+            } else if (mapType === 'desert') {
+                this.addRockFormation(x, y, 60);
+            } else if (mapType === 'snow') {
+                this.addIceFormation(x, y, 70);
+            } else if (mapType === 'urban') {
+                this.addRuinedBuilding(x, y);
+            }
+        }
+    }
+    
+    /**
+     * Add tactical chokepoints for strategic gameplay
+     */
+    addTacticalChokepoints() {
+        const chokepoints = Math.floor(Math.random() * 2) + 1;
+        
+        for (let i = 0; i < chokepoints; i++) {
+            const x = Math.random() * (this.mapWidth - 200) + 100;
+            const y = Math.random() * (this.mapHeight - 200) + 100;
+            
+            this.createChokepoint(x, y);
+        }
+    }
+    
+    /**
+     * Add tech bunkers (Allied)
+     */
+    addTechBunkers(count, faction) {
+        for (let i = 0; i < count; i++) {
+            const x = Math.random() * (this.mapWidth - 64) + 32;
+            const y = Math.random() * (this.mapHeight - 64) + 32;
+            
+            // Replace nearby tiles with tech outpost
+            const tileIndex = this.findTerrainTile(x, y);
+            if (tileIndex !== -1) {
+                this.layers.terrain[tileIndex].type = 'tech_outpost';
+                this.layers.terrain[tileIndex].faction = faction;
+            }
+        }
+    }
+    
+    /**
+     * Add industrial complexes (Soviet)
+     */
+    addIndustrialComplexes(count, faction) {
+        for (let i = 0; i < count; i++) {
+            const centerX = Math.random() * (this.mapWidth - 128) + 64;
+            const centerY = Math.random() * (this.mapHeight - 128) + 64;
+            
+            // Create industrial area
+            for (let x = centerX - 64; x < centerX + 64; x += this.tileSize) {
+                for (let y = centerY - 64; y < centerY + 64; y += this.tileSize) {
+                    if (x >= 0 && x < this.mapWidth && y >= 0 && y < this.mapHeight) {
+                        const tileIndex = this.findTerrainTile(x, y);
+                        if (tileIndex !== -1) {
+                            if (Math.random() > 0.6) {
+                                this.layers.terrain[tileIndex].type = 'concrete';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Add bio-labs (Yuri)
+     */
+    addBioLabs(count, faction) {
+        for (let i = 0; i < count; i++) {
+            const x = Math.random() * (this.mapWidth - 64) + 32;
+            const y = Math.random() * (this.mapHeight - 64) + 32;
+            
+            // Replace nearby tiles with bio-lab
+            const tileIndex = this.findTerrainTile(x, y);
+            if (tileIndex !== -1) {
+                this.layers.terrain[tileIndex].type = 'bio_lab';
+                this.layers.terrain[tileIndex].faction = faction;
+            }
+        }
+    }
+    
+    /**
+     * Add neutral structures
+     */
+    addNeutralStructures(mapType) {
+        const structures = Math.floor(Math.random() * 4) + 3;
+        
+        for (let i = 0; i < structures; i++) {
+            const x = Math.random() * (this.mapWidth - 64) + 32;
+            const y = Math.random() * (this.mapHeight - 64) + 32;
+            
+            const structureTypes = ['civilian_building', 'tech_outpost', 'oil_derrick'];
+            if (mapType === 'urban') {
+                structureTypes.push('airport', 'hospital', 'bank');
+            }
+            
+            const structureType = structureTypes[Math.floor(Math.random() * structureTypes.length)];
+            
+            const tileIndex = this.findTerrainTile(x, y);
+            if (tileIndex !== -1) {
+                this.layers.terrain[tileIndex].type = structureType;
+                this.layers.terrain[tileIndex].faction = 'neutral';
+            }
+        }
+    }
+    
+    /**
+     * Add forest patch
+     */
+    addForestPatch(centerX, centerY, size) {
+        for (let x = centerX - size; x < centerX + size; x += this.tileSize) {
+            for (let y = centerY - size; y < centerY + size; y += this.tileSize) {
+                const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+                
+                if (distance < size && x >= 0 && x < this.mapWidth && y >= 0 && y < this.mapHeight) {
+                    const tileIndex = this.findTerrainTile(x, y);
+                    if (tileIndex !== -1 && Math.random() > 0.3) {
+                        this.layers.terrain[tileIndex].type = 'forest';
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Add rock formation
+     */
+    addRockFormation(centerX, centerY, size) {
+        for (let x = centerX - size; x < centerX + size; x += this.tileSize) {
+            for (let y = centerY - size; y < centerY + size; y += this.tileSize) {
+                const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+                
+                if (distance < size * 0.7 && x >= 0 && x < this.mapWidth && y >= 0 && y < this.mapHeight) {
+                    const tileIndex = this.findTerrainTile(x, y);
+                    if (tileIndex !== -1) {
+                        this.layers.terrain[tileIndex].type = 'rock';
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Add ice formation
+     */
+    addIceFormation(centerX, centerY, size) {
+        for (let x = centerX - size; x < centerX + size; x += this.tileSize) {
+            for (let y = centerY - size; y < centerY + size; y += this.tileSize) {
+                const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+                
+                if (distance < size && x >= 0 && x < this.mapWidth && y >= 0 && y < this.mapHeight) {
+                    const tileIndex = this.findTerrainTile(x, y);
+                    if (tileIndex !== -1 && Math.random() > 0.4) {
+                        this.layers.terrain[tileIndex].type = 'ice';
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Add ruined building
+     */
+    addRuinedBuilding(x, y) {
+        const tileIndex = this.findTerrainTile(x, y);
+        if (tileIndex !== -1) {
+            this.layers.terrain[tileIndex].type = 'ruins';
+        }
+    }
+    
+    /**
+     * Create tactical chokepoint
+     */
+    createChokepoint(centerX, centerY) {
+        // Create narrow passage between cliff walls
+        for (let x = centerX - 100; x < centerX + 100; x += this.tileSize) {
+            for (let y = centerY - 50; y < centerY + 50; y += this.tileSize) {
+                if (x >= 0 && x < this.mapWidth && y >= 0 && y < this.mapHeight) {
+                    const distanceFromCenter = Math.abs(y - centerY);
+                    const tileIndex = this.findTerrainTile(x, y);
+                    
+                    if (tileIndex !== -1) {
+                        if (distanceFromCenter > 20) {
+                            this.layers.terrain[tileIndex].type = 'cliff';
+                        } else {
+                            this.layers.terrain[tileIndex].type = 'road';
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Draw Allied star symbol
+     */
+    drawAlliedStar(ctx, x, y, size, color) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        
+        const spikes = 5;
+        const outerRadius = size;
+        const innerRadius = size * 0.4;
+        
+        for (let i = 0; i < spikes * 2; i++) {
+            const angle = (i * Math.PI) / spikes;
+            const radius = i % 2 === 0 ? outerRadius : innerRadius;
+            const px = x + Math.cos(angle - Math.PI / 2) * radius;
+            const py = y + Math.sin(angle - Math.PI / 2) * radius;
+            
+            if (i === 0) {
+                ctx.moveTo(px, py);
+            } else {
+                ctx.lineTo(px, py);
+            }
+        }
+        
+        ctx.closePath();
+        ctx.fill();
+    }
+    
+    /**
+     * Draw Soviet hammer and sickle symbol
+     */
+    drawSovietSymbol(ctx, x, y, size, color) {
+        ctx.fillStyle = color;
+        
+        // Hammer handle
+        ctx.fillRect(x - size * 0.1, y - size * 0.8, size * 0.2, size * 1.2);
+        
+        // Hammer head
+        ctx.fillRect(x - size * 0.5, y - size * 0.6, size * 0.8, size * 0.3);
+        
+        // Sickle (simplified arc)
+        ctx.beginPath();
+        ctx.arc(x + size * 0.2, y + size * 0.2, size * 0.6, Math.PI, Math.PI * 1.5);
+        ctx.lineWidth = size * 0.2;
+        ctx.strokeStyle = color;
+        ctx.stroke();
+    }
+    
+    /**
+     * Draw Yuri psychic eye symbol
+     */
+    drawPsychicEye(ctx, x, y, size, color) {
+        // Outer eye shape
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.ellipse(x, y, size * 0.8, size * 0.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Inner pupil
+        ctx.fillStyle = '#000000';
+        ctx.beginPath();
+        ctx.arc(x, y, size * 0.3, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Psychic energy emanations
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 6; i++) {
+            const angle = (i * Math.PI) / 3;
+            const startX = x + Math.cos(angle) * size * 0.9;
+            const startY = y + Math.sin(angle) * size * 0.9;
+            const endX = x + Math.cos(angle) * size * 1.3;
+            const endY = y + Math.sin(angle) * size * 1.3;
+            
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+        }
     }
 }
