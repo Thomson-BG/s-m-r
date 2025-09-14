@@ -152,7 +152,7 @@ class FactionManager {
                 },
                 startingUnits: {
                     'engineer': 1,
-                    'slave_miner': 1
+                    'initiate': 3
                 },
                 startingResources: {
                     credits: 4500,
@@ -173,9 +173,9 @@ class FactionManager {
                 },
                 units: [
                     // Infantry
-                    'initiate', 'engineer', 'brute', 'yuri_clone', 'yuri_prime',
+                    'initiate', 'engineer', 'brute', 'yuri_clone', 'yuri_prime', 'slave',
                     // Vehicles
-                    'lasher_tank', 'gattling_tank', 'magnetron', 'mastermind', 'floating_disc', 'slave_miner',
+                    'lasher_tank', 'gattling_tank', 'magnetron', 'mastermind', 'floating_disc',
                     // Aircraft  
                     'boomer_sub',
                     // Naval
