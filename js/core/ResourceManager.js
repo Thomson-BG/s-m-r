@@ -225,7 +225,8 @@ class ResourceManager {
      */
     addPowerPlant(powerPlant) {
         this.powerPlants.push(powerPlant);
-        this.addPowerGeneration(powerPlant.powerOutput);
+        console.log(`🐛 Adding power plant with powerGeneration: ${powerPlant.powerGeneration}`);
+        this.addPowerGeneration(powerPlant.powerGeneration);
         console.log('⚡ Power plant added');
     }
     
@@ -236,7 +237,7 @@ class ResourceManager {
         const index = this.powerPlants.indexOf(powerPlant);
         if (index > -1) {
             this.powerPlants.splice(index, 1);
-            this.removePowerGeneration(powerPlant.powerOutput);
+            this.removePowerGeneration(powerPlant.powerGeneration);
             console.log('⚡ Power plant removed');
         }
     }

@@ -913,18 +913,53 @@ class UnitManager {
     }
     
     /**
+     * Resolve generic unit types to faction-specific ones
+     */
+    resolveUnitType(unitType, faction) {
+        // Generic unit type mappings
+        const genericMappings = {
+            'harvester': {
+                'allies': 'chrono_miner',
+                'soviet': 'war_miner',
+                'empire': 'ore_collector',
+                'confederation': 'mineral_harvester'
+            },
+            'tank': {
+                'allies': 'grizzly_tank',
+                'soviet': 'rhino_tank',
+                'empire': 'mecha_tengu',
+                'confederation': 'guardian_tank'
+            }
+        };
+        
+        // Check if it's a generic type that needs mapping
+        if (genericMappings[unitType] && genericMappings[unitType][faction]) {
+            return genericMappings[unitType][faction];
+        }
+        
+        // Return original type if no mapping needed
+        return unitType;
+    }
+
+    /**
      * Create a new unit
      */
     createUnit(unitType, options = {}) {
-        const unitDef = this.unitTypes.get(unitType);
+        // Resolve generic unit types
+        const faction = options.faction || 'allies';
+        const resolvedType = this.resolveUnitType(unitType, faction);
+        
+        console.log(`🐛 Creating unit: ${unitType} -> ${resolvedType} (faction: ${faction})`);
+        
+        const unitDef = this.unitTypes.get(resolvedType);
         if (!unitDef) {
-            console.error(`Unknown unit type: ${unitType}`);
+            console.error(`Unknown unit type: ${resolvedType} (original: ${unitType})`);
             return null;
         }
         
         const unit = new Unit({
             id: this.unitIdCounter++,
-            type: unitType,
+            type: resolvedType,
             ...unitDef,
             x: options.x || 0,
             y: options.y || 0,
