@@ -384,6 +384,7 @@ class UIManager {
      * Update power display
      */
     updatePowerDisplay(power, maxPower) {
+        console.log('🔋 Power display update:', power, maxPower);
         if (this.elements.powerDisplay) {
             this.elements.powerDisplay.textContent = `${Math.floor(power)}/${Math.floor(maxPower)}`;
         }

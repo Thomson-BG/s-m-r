@@ -202,6 +202,7 @@ class GameEngine {
         this.difficulty = gameSettings.difficulty;
         this.mapSize = gameSettings.mapSize;
         this.currentState = 'playing';
+        this.gameStartTime = performance.now();
         
         // Initialize game world
         this.initializeGameWorld(gameSettings);
@@ -231,6 +232,16 @@ class GameEngine {
         
         // Place starting buildings and units
         this.placeStartingAssets();
+        
+        // Force UI update for initial values
+        if (this.uiManager) {
+            const credits = this.resourceManager.getCredits();
+            const power = this.resourceManager.getPower();
+            const maxPower = this.resourceManager.getMaxPower();
+            console.log('🔋 Initial values - credits:', credits, 'power:', power, 'maxPower:', maxPower);
+            this.uiManager.updateCreditsDisplay(credits);
+            this.uiManager.updatePowerDisplay(power, maxPower);
+        }
         
         console.log('🌍 Game world initialized');
     }
@@ -424,9 +435,24 @@ class GameEngine {
             return requiredObjectives.length > 0 && completedRequiredObjectives.length === requiredObjectives.length;
         }
         
-        // For skirmish: check if all enemies are eliminated
+        // For skirmish: add minimum game time requirement and check if all enemies are eliminated
+        const currentTime = performance.now();
+        const gameStartTime = this.gameStartTime || currentTime;
+        const gameTimeElapsed = currentTime - gameStartTime;
+        const minimumGameTime = 10000; // 10 seconds minimum
+        
+        if (gameTimeElapsed < minimumGameTime) {
+            return false; // Game must run for at least 10 seconds
+        }
+        
         const enemyBuildings = this.buildingManager.getBuildingsByFaction('enemy');
         const enemyUnits = this.unitManager.getUnitsByFaction('enemy');
+        
+        // For now, require player to have built at least 3 units to win
+        const playerUnits = this.unitManager.getUnitsByFaction(this.selectedFaction);
+        if (playerUnits.length < 3) {
+            return false;
+        }
         
         return enemyBuildings.length === 0 && enemyUnits.length === 0;
     }
