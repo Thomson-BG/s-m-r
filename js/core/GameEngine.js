@@ -242,6 +242,7 @@ class GameEngine {
         const startingBuildings = this.factionManager.getStartingBuildings(this.selectedFaction);
         const startingUnits = this.factionManager.getStartingUnits(this.selectedFaction);
         
+        // PLAYER STARTING ASSETS
         // Place construction yard at center
         const constructionYard = this.buildingManager.createBuilding('construction_yard', {
             x: 400,
@@ -276,7 +277,75 @@ class GameEngine {
             faction: this.selectedFaction
         });
         
-        console.log('🏗️ Starting assets placed');
+        console.log('🏗️ Player starting assets placed');
+        
+        // ENEMY STARTING ASSETS (placed far from player)
+        try {
+            const enemyFaction = 'enemy';
+            
+            console.log('🏗️ Creating enemy assets...');
+            
+            // Enemy construction yard
+            const enemyConstructionYard = this.buildingManager.createBuilding('construction_yard', {
+                x: 1200,
+                y: 900,
+                faction: enemyFaction
+            });
+            console.log('🏗️ Enemy construction yard created');
+            
+            // Enemy power plant
+            const enemyPowerPlant = this.buildingManager.createBuilding('power_plant', {
+                x: 1150,
+                y: 850,
+                faction: enemyFaction
+            });
+            console.log('🏗️ Enemy power plant created');
+            
+            // Enemy ore refinery
+            const enemyRefinery = this.buildingManager.createBuilding('ore_refinery', {
+                x: 1250,
+                y: 850,
+                faction: enemyFaction
+            });
+            console.log('🏗️ Enemy refinery created');
+            
+            // Enemy units
+            const enemyEngineer = this.unitManager.createUnit('engineer', {
+                x: 1180,
+                y: 950,
+                faction: enemyFaction
+            });
+            console.log('🏗️ Enemy engineer created');
+            
+            const enemyHarvester = this.unitManager.createUnit('chrono_miner', {
+                x: 1270,
+                y: 880,
+                faction: enemyFaction
+            });
+            console.log('🏗️ Enemy harvester created');
+            
+            // Enemy attack units
+            const enemyTank = this.unitManager.createUnit('grizzly_tank', {
+                x: 1150,
+                y: 950,
+                faction: enemyFaction
+            });
+            console.log('🏗️ Enemy tank created');
+            
+            const enemyInfantry = this.unitManager.createUnit('gi', {
+                x: 1100,
+                y: 900,
+                faction: enemyFaction
+            });
+            console.log('🏗️ Enemy infantry created');
+            
+            console.log('🏗️ All enemy assets created successfully');
+            
+        } catch (error) {
+            console.error('❌ Failed to create enemy assets:', error);
+        }
+        
+        console.log('🏗️ Starting assets placed for player and enemy');
     }
     
     /**
