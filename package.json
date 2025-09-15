@@ -6,9 +6,10 @@
   "scripts": {
     "start": "python3 -m http.server 8000",
     "dev": "./start-server.sh",
-    "build": "echo 'No build process needed - pure HTML/CSS/JS'",
+    "build": "echo 'Static site - no build needed' && exit 0",
     "test": "echo 'Manual testing via browser'",
-    "serve": "python3 -m http.server 8000"
+    "serve": "python3 -m http.server 8000",
+    "vercel-build": "echo 'Vercel static deployment ready'"
   },
   "keywords": [
     "rts",

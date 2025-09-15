@@ -27,6 +27,10 @@ class UIManager {
         this.setupModalSystem();
         this.setupTooltips();
         
+        // Initialize displays with default values
+        this.updateCreditsDisplay(5000);
+        this.updatePowerDisplay(100, 100);
+        
         this.isInitialized = true;
         console.log('✅ UIManager ready');
     }
@@ -386,7 +390,10 @@ class UIManager {
     updatePowerDisplay(power, maxPower) {
         console.log('🔋 Power display update:', power, maxPower);
         if (this.elements.powerDisplay) {
-            this.elements.powerDisplay.textContent = `${Math.floor(power)}/${Math.floor(maxPower)}`;
+            // Ensure values are numbers and not NaN
+            const safePower = isNaN(power) ? 0 : Math.max(0, Math.floor(power));
+            const safeMaxPower = isNaN(maxPower) ? 0 : Math.max(0, Math.floor(maxPower));
+            this.elements.powerDisplay.textContent = `${safePower}/${safeMaxPower}`;
         }
     }
     

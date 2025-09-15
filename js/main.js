@@ -132,10 +132,8 @@ async function loadAssets() {
 async function finalizeInitialization() {
     // Final setup steps
     
-    // Register service worker for offline capability
-    // Temporarily disabled for development
-    /*
-    if ('serviceWorker' in navigator) {
+    // Register service worker for offline capability and performance
+    if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
         try {
             await navigator.serviceWorker.register('/sw.js');
             console.log('📱 Service worker registered');
@@ -143,7 +141,6 @@ async function finalizeInitialization() {
             console.warn('Service worker registration failed:', error);
         }
     }
-    */
     
     // Setup global error handlers
     setupErrorHandlers();

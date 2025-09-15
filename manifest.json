@@ -1,0 +1,27 @@
+{
+  "name": "Scotty Mason's Revenge",
+  "short_name": "SMR",
+  "description": "Real-Time Strategy Game inspired by Command & Conquer: Red Alert 2",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "landscape-primary",
+  "theme_color": "#cc0000",
+  "background_color": "#000000",
+  "icons": [
+    {
+      "src": "assets/favicon.ico",
+      "sizes": "16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["games", "entertainment"],
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false
+}

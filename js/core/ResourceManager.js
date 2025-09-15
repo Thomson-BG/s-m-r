@@ -45,8 +45,13 @@ class ResourceManager {
         this.powerPlants = [];
         this.harvesters = [];
         
-        this.emit('creditsChanged', this.credits);
-        this.emit('powerChanged', this.power, this.maxPower);
+        // Ensure values are valid numbers before emitting events
+        const safeCredits = isNaN(this.credits) ? 5000 : this.credits;
+        const safePower = isNaN(this.power) ? 100 : this.power;
+        const safeMaxPower = isNaN(this.maxPower) ? 100 : this.maxPower;
+        
+        this.emit('creditsChanged', safeCredits);
+        this.emit('powerChanged', safePower, safeMaxPower);
     }
     
     /**
