@@ -450,23 +450,62 @@ class Renderer {
      * Draw construction yard building
      */
     drawConstructionYard(ctx, size, colors, faction) {
-        // Main building structure
+        // Main building structure - more angular and industrial
         ctx.fillStyle = colors.primary;
-        ctx.fillRect(4, 4, size - 8, size - 8);
+        ctx.fillRect(2, 2, size - 4, size - 4);
         
-        // Construction crane
-        ctx.strokeStyle = colors.metal;
-        ctx.lineWidth = 3;
+        // Faction-specific architectural details
+        if (faction === 'allies') {
+            // Allied: Clean, technological appearance
+            ctx.fillStyle = colors.secondary;
+            ctx.fillRect(4, 4, size - 8, 8);
+            ctx.fillRect(4, size - 12, size - 8, 8);
+            
+            // Radar dish
+            ctx.fillStyle = colors.metal;
+            ctx.beginPath();
+            ctx.arc(size * 0.8, size * 0.2, 6, 0, Math.PI * 2);
+            ctx.fill();
+        } else if (faction === 'soviet' || faction === 'enemy') {
+            // Soviet: Heavy, industrial appearance
+            ctx.fillStyle = colors.dark;
+            ctx.fillRect(6, 6, size - 12, size - 12);
+            
+            // Factory smokestacks
+            ctx.fillStyle = colors.metal;
+            ctx.fillRect(size * 0.7, 2, 4, size * 0.3);
+            ctx.fillRect(size * 0.8, 2, 4, size * 0.4);
+        }
+        
+        // Construction crane - more detailed
+        ctx.strokeStyle = colors.accent;
+        ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(size * 0.2, size * 0.8);
-        ctx.lineTo(size * 0.2, size * 0.2);
-        ctx.lineTo(size * 0.7, size * 0.2);
+        ctx.moveTo(size * 0.15, size * 0.85);
+        ctx.lineTo(size * 0.15, size * 0.15);
+        ctx.lineTo(size * 0.6, size * 0.15);
         ctx.stroke();
         
-        // Building details
-        ctx.fillStyle = colors.secondary;
-        ctx.fillRect(8, 8, size - 16, 12);
-        ctx.fillRect(8, size - 20, size - 16, 12);
+        // Crane hook
+        ctx.fillStyle = colors.accent;
+        ctx.fillRect(size * 0.55, size * 0.15, 3, 8);
+        
+        // Building outline
+        ctx.strokeStyle = colors.dark;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(2, 2, size - 4, size - 4);
+        
+        // Faction emblem
+        ctx.fillStyle = colors.accent;
+        if (faction === 'allies') {
+            // Allied star
+            this.drawStar(ctx, size * 0.8, size * 0.8, 4, 2);
+        } else if (faction === 'soviet' || faction === 'enemy') {
+            // Soviet hammer and sickle (simplified)
+            ctx.fillRect(size * 0.75, size * 0.75, 8, 2);
+            ctx.fillRect(size * 0.78, size * 0.72, 2, 8);
+        }
+    }
         
         // Faction logo area
         ctx.fillStyle = colors.accent;
@@ -476,6 +515,30 @@ class Renderer {
         ctx.strokeStyle = colors.dark;
         ctx.lineWidth = 2;
         ctx.strokeRect(4, 4, size - 8, size - 8);
+    }
+    
+    /**
+     * Helper method to draw a star shape
+     */
+    drawStar(ctx, x, y, outerRadius, innerRadius) {
+        const points = 5;
+        ctx.beginPath();
+        
+        for (let i = 0; i < points * 2; i++) {
+            const angle = (i * Math.PI) / points;
+            const radius = i % 2 === 0 ? outerRadius : innerRadius;
+            const px = x + Math.cos(angle - Math.PI / 2) * radius;
+            const py = y + Math.sin(angle - Math.PI / 2) * radius;
+            
+            if (i === 0) {
+                ctx.moveTo(px, py);
+            } else {
+                ctx.lineTo(px, py);
+            }
+        }
+        
+        ctx.closePath();
+        ctx.fill();
     }
     
     /**
@@ -607,45 +670,128 @@ class Renderer {
         const centerX = size / 2;
         const centerY = size / 2;
         
-        // Tank body
-        ctx.fillStyle = colors.primary;
-        ctx.fillRect(centerX - 8, centerY - 6, 16, 12);
-        
-        // Turret
-        ctx.fillStyle = colors.secondary;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, 6, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Cannon
-        ctx.fillStyle = colors.dark;
-        if (name === 'prism_tank') {
-            // Prism cannon (crystalline)
-            ctx.fillStyle = colors.energy;
-            ctx.fillRect(centerX - 1, centerY - 10, 2, 8);
-            ctx.fillRect(centerX - 2, centerY - 8, 4, 2);
+        // Faction-specific tank designs
+        if (name === 'grizzly_tank' || name === 'rhino_tank') {
+            // Main tank body - more angular for realism
+            ctx.fillStyle = colors.primary;
+            ctx.fillRect(centerX - 10, centerY - 6, 20, 12);
+            
+            // Tank hull details
+            ctx.fillStyle = colors.secondary;
+            ctx.fillRect(centerX - 8, centerY - 4, 16, 8);
+            
+            // Turret - faction specific
+            if (name === 'grizzly_tank') {
+                // Allied Grizzly - sleek turret
+                ctx.fillStyle = colors.secondary;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 7, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Cannon
+                ctx.fillStyle = colors.metal;
+                ctx.fillRect(centerX - 1, centerY - 12, 2, 10);
+                
+                // Allied star emblem
+                ctx.fillStyle = colors.accent;
+                this.drawStar(ctx, centerX, centerY + 6, 3, 1);
+                
+            } else if (name === 'rhino_tank') {
+                // Soviet Rhino - heavy angular turret
+                ctx.fillStyle = colors.secondary;
+                ctx.fillRect(centerX - 6, centerY - 6, 12, 12);
+                
+                // Heavy cannon
+                ctx.fillStyle = colors.metal;
+                ctx.fillRect(centerX - 2, centerY - 12, 4, 10);
+                
+                // Soviet red star
+                ctx.fillStyle = colors.accent;
+                this.drawStar(ctx, centerX, centerY + 6, 3, 1);
+            }
+            
+            // Tank tracks - more detailed
+            ctx.fillStyle = colors.dark;
+            ctx.fillRect(centerX - 12, centerY - 8, 3, 16);
+            ctx.fillRect(centerX + 9, centerY - 8, 3, 16);
+            
+            // Track treads
+            ctx.fillStyle = colors.metal;
+            for (let i = 0; i < 4; i++) {
+                const y = centerY - 6 + i * 3;
+                ctx.fillRect(centerX - 11, y, 1, 2);
+                ctx.fillRect(centerX + 10, y, 1, 2);
+            }
+            
         } else if (name === 'apocalypse_tank') {
+            // Soviet Apocalypse Tank - massive and intimidating
+            ctx.fillStyle = colors.primary;
+            ctx.fillRect(centerX - 12, centerY - 8, 24, 16);
+            
+            // Heavy armor plating
+            ctx.fillStyle = colors.dark;
+            ctx.fillRect(centerX - 10, centerY - 6, 20, 12);
+            
+            // Dual turrets
+            ctx.fillStyle = colors.secondary;
+            ctx.fillRect(centerX - 8, centerY - 8, 6, 6);
+            ctx.fillRect(centerX + 2, centerY - 8, 6, 6);
+            
             // Dual cannons
-            ctx.fillRect(centerX - 3, centerY - 10, 2, 8);
-            ctx.fillRect(centerX + 1, centerY - 10, 2, 8);
+            ctx.fillStyle = colors.metal;
+            ctx.fillRect(centerX - 6, centerY - 14, 2, 8);
+            ctx.fillRect(centerX + 4, centerY - 14, 2, 8);
+            
+            // Heavy tracks
+            ctx.fillStyle = colors.dark;
+            ctx.fillRect(centerX - 14, centerY - 10, 4, 20);
+            ctx.fillRect(centerX + 10, centerY - 10, 4, 20);
+            
+        } else if (name === 'prism_tank') {
+            // Allied Prism Tank - high-tech appearance
+            ctx.fillStyle = colors.primary;
+            ctx.fillRect(centerX - 9, centerY - 5, 18, 10);
+            
+            // Prism housing
+            ctx.fillStyle = colors.secondary;
+            ctx.fillRect(centerX - 4, centerY - 8, 8, 8);
+            
+            // Prism crystal
+            ctx.fillStyle = colors.energy;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY - 12);
+            ctx.lineTo(centerX - 3, centerY - 6);
+            ctx.lineTo(centerX + 3, centerY - 6);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Energy conduits
+            ctx.strokeStyle = colors.energy;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(centerX - 6, centerY);
+            ctx.lineTo(centerX, centerY - 6);
+            ctx.lineTo(centerX + 6, centerY);
+            ctx.stroke();
+            
         } else {
-            // Regular cannon
+            // Generic tank design
+            ctx.fillStyle = colors.primary;
+            ctx.fillRect(centerX - 8, centerY - 6, 16, 12);
+            
+            ctx.fillStyle = colors.secondary;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 6, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = colors.dark;
             ctx.fillRect(centerX - 1, centerY - 10, 2, 8);
         }
-        
-        // Tracks
-        ctx.fillStyle = colors.metal;
-        ctx.fillRect(centerX - 10, centerY - 8, 2, 16);
-        ctx.fillRect(centerX + 8, centerY - 8, 2, 16);
-        
-        // Faction markings
-        ctx.fillStyle = colors.accent;
-        ctx.fillRect(centerX - 2, centerY - 2, 4, 4);
         
         // Outline
         ctx.strokeStyle = colors.dark;
         ctx.lineWidth = 1;
-        ctx.strokeRect(centerX - 10, centerY - 8, 20, 16);
+        ctx.strokeRect(centerX - 12, centerY - 10, 24, 20);
     }
     
     /**
