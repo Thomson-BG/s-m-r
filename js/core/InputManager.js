@@ -218,8 +218,11 @@ class InputManager {
         if (this.mouse.isDragging) {
             this.endDrag();
         } else if (event.button === 0) {
-            // Single click selection
+            // Left click - selection
             this.handleSingleClick();
+        } else if (event.button === 2) {
+            // Right click - commands
+            this.handleRightClick(event);
         }
         
         this.mouse.isDown = false;

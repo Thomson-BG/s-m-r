@@ -265,6 +265,26 @@ class Unit extends GameObject {
      * Update idle behavior
      */
     updateIdle(deltaTime) {
+        // Special behavior for harvesters
+        if (this.canHarvest && this.carryingOre < this.maxOreCapacity) {
+            // Look for nearby resources
+            if (window.gameEngine.resourceManager) {
+                const nearestPatch = window.gameEngine.resourceManager.findNearestResourcePatch(
+                    this.getCenterX(), this.getCenterY(), 300
+                );
+                
+                if (nearestPatch) {
+                    // Move to resource patch
+                    this.orders.push({
+                        type: 'harvest',
+                        target: nearestPatch
+                    });
+                    this.moveTo(nearestPatch.x, nearestPatch.y);
+                    return;
+                }
+            }
+        }
+        
         // Look for nearby enemies if aggressive
         if (this.damage > 0) {
             this.autoTarget();
@@ -379,14 +399,37 @@ class Unit extends GameObject {
             return;
         }
         
-        // Simulate ore collection
-        const harvestRate = 10; // ore per second
-        const harvested = Math.min(harvestRate * deltaTime, this.maxOreCapacity - this.carryingOre);
+        // Check if we're close enough to the resource patch
+        const distance = Math.sqrt(
+            (this.harvesting.x - this.getCenterX()) ** 2 + 
+            (this.harvesting.y - this.getCenterY()) ** 2
+        );
         
-        this.carryingOre += harvested;
+        if (distance > this.harvesting.radius || 30) {
+            // Move closer to the resource patch
+            this.moveTo(this.harvesting.x, this.harvesting.y);
+            return;
+        }
         
-        // If full, return to refinery
-        if (this.carryingOre >= this.maxOreCapacity) {
+        // Harvest ore from the patch
+        const harvestRate = 20; // ore per second
+        const maxHarvest = Math.min(harvestRate * deltaTime, this.maxOreCapacity - this.carryingOre);
+        
+        if (window.gameEngine.resourceManager && maxHarvest > 0) {
+            const harvested = window.gameEngine.resourceManager.harvestFromPatch(
+                this.harvesting.id, maxHarvest
+            );
+            this.carryingOre += harvested;
+            
+            // Visual feedback
+            if (harvested > 0) {
+                this.emit('resourceHarvested', { amount: harvested, type: 'ore' });
+            }
+        }
+        
+        // If full or patch is depleted, return to refinery
+        if (this.carryingOre >= this.maxOreCapacity || 
+            (this.harvesting.amount && this.harvesting.amount <= 0)) {
             this.returnToRefinery();
         }
     }

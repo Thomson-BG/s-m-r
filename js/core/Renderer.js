@@ -28,6 +28,7 @@ class Renderer {
         // Rendering layers
         this.layers = {
             terrain: [],
+            resourcePatches: [],
             buildings: [],
             units: [],
             effects: [],
@@ -1584,6 +1585,23 @@ class Renderer {
     }
     
     /**
+     * Add a resource patch to render
+     */
+    addResourcePatch(patch) {
+        this.layers.resourcePatches.push(patch);
+    }
+    
+    /**
+     * Remove a resource patch from render
+     */
+    removeResourcePatch(patch) {
+        const index = this.layers.resourcePatches.indexOf(patch);
+        if (index > -1) {
+            this.layers.resourcePatches.splice(index, 1);
+        }
+    }
+    
+    /**
      * Clear the canvas
      */
     clear() {
@@ -1610,6 +1628,7 @@ class Renderer {
         
         // Render layers in order
         this.renderTerrain();
+        this.renderResourcePatches();
         this.renderBuildings();
         this.renderUnits();
         this.renderEffects();
@@ -1634,6 +1653,17 @@ class Renderer {
                 if (sprite) {
                     this.context.drawImage(sprite, tile.x, tile.y);
                 }
+            }
+        }
+    }
+    
+    /**
+     * Render resource patches layer
+     */
+    renderResourcePatches() {
+        for (const patch of this.layers.resourcePatches) {
+            if (this.isInView(patch.x - 30, patch.y - 30, 60, 60)) {
+                this.drawResourcePatch(patch);
             }
         }
     }
@@ -1906,12 +1936,71 @@ class Renderer {
     }
     
     /**
+     * Draw a resource patch
+     */
+    drawResourcePatch(patch) {
+        const ctx = this.context;
+        const centerX = patch.x;
+        const centerY = patch.y;
+        const radius = 25;
+        
+        // Draw ore patch - golden yellow crystals
+        ctx.save();
+        
+        // Background glow
+        const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+        gradient.addColorStop(0, 'rgba(255, 215, 0, 0.3)');
+        gradient.addColorStop(0.7, 'rgba(255, 215, 0, 0.1)');
+        gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(centerX - radius, centerY - radius, radius * 2, radius * 2);
+        
+        // Draw ore crystals/chunks
+        const density = Math.max(0.2, patch.amount / patch.maxAmount);
+        const oreCount = Math.floor(12 * density);
+        
+        for (let i = 0; i < oreCount; i++) {
+            const angle = (i / oreCount) * Math.PI * 2 + Math.sin(patch.id + i) * 0.5;
+            const distance = (radius * 0.3) + Math.random() * (radius * 0.4);
+            const x = centerX + Math.cos(angle) * distance;
+            const y = centerY + Math.sin(angle) * distance;
+            
+            // Draw ore chunk
+            ctx.fillStyle = '#FFD700'; // Gold
+            ctx.strokeStyle = '#B8860B'; // Dark gold
+            ctx.lineWidth = 1;
+            
+            ctx.beginPath();
+            const chunkSize = 3 + Math.random() * 4;
+            ctx.rect(x - chunkSize/2, y - chunkSize/2, chunkSize, chunkSize);
+            ctx.fill();
+            ctx.stroke();
+            
+            // Add highlight
+            ctx.fillStyle = '#FFFF99';
+            ctx.fillRect(x - chunkSize/4, y - chunkSize/4, chunkSize/2, chunkSize/2);
+        }
+        
+        // Amount indicator (for debugging)
+        if (this.showDebugInfo) {
+            ctx.fillStyle = 'white';
+            ctx.font = '12px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(Math.floor(patch.amount).toString(), centerX, centerY - radius - 5);
+        }
+        
+        ctx.restore();
+    }
+    
+    /**
      * Get render statistics
      */
     getRenderStats() {
         return {
             fps: this.fps,
             terrainTiles: this.layers.terrain.length,
+            resourcePatches: this.layers.resourcePatches.length,
             buildings: this.layers.buildings.length,
             units: this.layers.units.length,
             effects: this.layers.effects.length,
