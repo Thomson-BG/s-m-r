@@ -113,8 +113,11 @@ class ResourceManager {
      * Add power generation
      */
     addPowerGeneration(amount) {
+        console.log(`🐛 addPowerGeneration called with amount: ${amount}, current maxPower: ${this.maxPower}`);
         this.maxPower += amount;
         this.power = Math.min(this.power + amount, this.maxPower);
+        console.log(`🐛 After adding power - power: ${this.power}, maxPower: ${this.maxPower}`);
+        console.log(`🐛 Emitting powerChanged with: ${this.power}, ${this.maxPower}`);
         this.emit('powerChanged', this.power, this.maxPower);
     }
     

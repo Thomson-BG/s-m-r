@@ -48,7 +48,7 @@ class CampaignManager {
                             { type: 'train', target: 'gi', count: 5, required: true },
                             { type: 'collect', target: 'credits', count: 2000, required: false }
                         ],
-                        startingUnits: { engineer: 1, harvester: 1 },
+                        startingUnits: { engineer: 1, chrono_miner: 1 },
                         startingBuildings: { construction_yard: 1, power_plant: 1 },
                         startingCredits: 3000,
                         timeLimit: 900, // 15 minutes
@@ -65,7 +65,7 @@ class CampaignManager {
                             { type: 'build', target: 'defense_turret', count: 3, required: true },
                             { type: 'destroy', target: 'enemy_units', count: 20, required: false }
                         ],
-                        startingUnits: { engineer: 1, gi: 3, tank: 1 },
+                        startingUnits: { engineer: 1, gi: 3, grizzly_tank: 1 },
                         startingBuildings: { construction_yard: 1, power_plant: 2, barracks: 1 },
                         startingCredits: 5000,
                         timeLimit: 1200, // 20 minutes
@@ -79,10 +79,10 @@ class CampaignManager {
                         description: 'Launch an offensive against enemy positions',
                         objectives: [
                             { type: 'destroy', target: 'enemy_base', count: 1, required: true },
-                            { type: 'train', target: 'tank', count: 8, required: true },
+                            { type: 'train', target: 'grizzly_tank', count: 8, required: true },
                             { type: 'capture', target: 'tech_center', count: 1, required: false }
                         ],
-                        startingUnits: { engineer: 2, gi: 5, tank: 2 },
+                        startingUnits: { engineer: 2, gi: 5, grizzly_tank: 2 },
                         startingBuildings: { construction_yard: 1, power_plant: 2, barracks: 1, war_factory: 1 },
                         startingCredits: 8000,
                         timeLimit: 1800, // 30 minutes
@@ -105,7 +105,7 @@ class CampaignManager {
                         description: 'Establish Soviet dominance in the region',
                         objectives: [
                             { type: 'build', target: 'war_factory', count: 1, required: true },
-                            { type: 'train', target: 'tank', count: 6, required: true },
+                            { type: 'train', target: 'rhino_tank', count: 6, required: true },
                             { type: 'destroy', target: 'allied_forces', count: 15, required: true }
                         ],
                         startingUnits: { engineer: 1, conscript: 3 },
@@ -323,7 +323,9 @@ class CampaignManager {
         }
         
         for (let i = 0; i < 2; i++) {
-            window.gameEngine.unitManager.createUnit('tank', {
+            // Use faction-specific tank types
+            const tankType = enemyFaction === 'soviet' ? 'rhino_tank' : 'grizzly_tank';
+            window.gameEngine.unitManager.createUnit(tankType, {
                 x: 950 + i * 50,
                 y: 350,
                 faction: enemyFaction

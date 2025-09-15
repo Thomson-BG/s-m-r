@@ -3,7 +3,7 @@
  * Enables offline gameplay and caching
  */
 
-const CACHE_NAME = 'scotty-masons-revenge-v1.0.0';
+const CACHE_NAME = 'scotty-masons-revenge-v1.0.3';
 const CACHE_FILES = [
     '/',
     '/index.html',

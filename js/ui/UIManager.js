@@ -384,8 +384,11 @@ class UIManager {
      * Update power display
      */
     updatePowerDisplay(power, maxPower) {
+        console.log(`🐛 updatePowerDisplay called with power: ${power}, maxPower: ${maxPower}`);
         if (this.elements.powerDisplay) {
-            this.elements.powerDisplay.textContent = `${Math.floor(power)}/${Math.floor(maxPower)}`;
+            const displayText = `${Math.floor(power)}/${Math.floor(maxPower)}`;
+            console.log(`🐛 Setting power display to: ${displayText}`);
+            this.elements.powerDisplay.textContent = displayText;
         }
     }
     
