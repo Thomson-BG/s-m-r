@@ -133,6 +133,8 @@ async function finalizeInitialization() {
     // Final setup steps
     
     // Register service worker for offline capability
+    // Temporarily disabled for development
+    /*
     if ('serviceWorker' in navigator) {
         try {
             await navigator.serviceWorker.register('/sw.js');
@@ -141,6 +143,7 @@ async function finalizeInitialization() {
             console.warn('Service worker registration failed:', error);
         }
     }
+    */
     
     // Setup global error handlers
     setupErrorHandlers();
@@ -210,6 +213,20 @@ function setupGlobalEventListeners() {
     if (window.gameEngine.resourceManager) {
         window.gameEngine.resourceManager.on('powerShortage', (shortage) => {
             showNotification('Power shortage! Build more power plants.', 'warning', 4000);
+        });
+        
+        // Update UI when credits change
+        window.gameEngine.resourceManager.on('creditsChanged', (credits) => {
+            if (window.gameEngine.uiManager) {
+                window.gameEngine.uiManager.updateCreditsDisplay(credits);
+            }
+        });
+        
+        // Update UI when power changes
+        window.gameEngine.resourceManager.on('powerChanged', (power, maxPower) => {
+            if (window.gameEngine.uiManager) {
+                window.gameEngine.uiManager.updatePowerDisplay(power, maxPower);
+            }
         });
     }
     
