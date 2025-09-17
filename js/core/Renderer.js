@@ -1342,10 +1342,13 @@ class Renderer {
         
         const terrainConfig = tileTypeMap[mapType];
         
-        for (let x = 0; x < this.mapWidth; x += this.tileSize) {
-            for (let y = 0; y < this.mapHeight; y += this.tileSize) {
-                // Use noise function for natural terrain variation
-                const noiseValue = this.simpleNoise(x / 100, y / 100);
+        // Reduce terrain resolution to improve performance 
+        const terrainRes = this.tileSize * 2; // Use larger tiles
+        
+        for (let x = 0; x < this.mapWidth; x += terrainRes) {
+            for (let y = 0; y < this.mapHeight; y += terrainRes) {
+                // Use simplified noise function for better performance
+                const noiseValue = Math.sin(x * 0.01) * Math.cos(y * 0.01);
                 
                 let tileType = terrainConfig.base;
                 if (noiseValue > 0.3) {
@@ -1356,6 +1359,8 @@ class Renderer {
                     type: tileType,
                     x: x,
                     y: y,
+                    width: terrainRes,
+                    height: terrainRes,
                     mapType: mapType
                 });
             }
@@ -1617,6 +1622,7 @@ class Renderer {
      * Add a unit to render
      */
     addUnit(unit) {
+        console.log('🎨 Adding unit to renderer:', unit.type, 'at', unit.x, unit.y);
         this.layers.units.push(unit);
     }
     
@@ -1634,6 +1640,7 @@ class Renderer {
      * Add a building to render
      */
     addBuilding(building) {
+        console.log('🏗️ Adding building to renderer:', building.type, 'at', building.x, building.y);
         this.layers.buildings.push(building);
     }
     
@@ -1653,8 +1660,8 @@ class Renderer {
     clear() {
         this.context.clearRect(0, 0, this.width, this.height);
         
-        // Fill with background color
-        this.context.fillStyle = '#001100';
+        // Fill with a visible background color to test if canvas is working
+        this.context.fillStyle = '#003300'; // Dark green to test visibility
         this.context.fillRect(0, 0, this.width, this.height);
     }
     
@@ -1693,10 +1700,14 @@ class Renderer {
      */
     renderTerrain() {
         for (const tile of this.layers.terrain) {
-            if (this.isInView(tile.x, tile.y, this.tileSize, this.tileSize)) {
+            const tileWidth = tile.width || this.tileSize;
+            const tileHeight = tile.height || this.tileSize;
+            
+            if (this.isInView(tile.x, tile.y, tileWidth, tileHeight)) {
                 const sprite = this.sprites.get(tile.type);
                 if (sprite) {
-                    this.context.drawImage(sprite, tile.x, tile.y);
+                    // Scale the sprite to the tile size
+                    this.context.drawImage(sprite, tile.x, tile.y, tileWidth, tileHeight);
                 }
             }
         }

@@ -155,6 +155,7 @@ class ResourceManager {
         
         if (availablePower !== this.power) {
             this.power = availablePower;
+            console.log('🔋 Power status updated:', this.power, '/', this.maxPower, '(used:', this.powerUsed, ')');
             this.emit('powerChanged', this.power, this.maxPower);
         }
         
@@ -189,9 +190,13 @@ class ResourceManager {
      * Set power (for initialization)
      */
     setPower(current, max) {
-        // Handle null/undefined values
-        current = current || 0;
-        max = max || 0;
+        // Handle null/undefined values and ensure numbers
+        current = Number(current) || 0;
+        max = Number(max) || 0;
+        
+        // Ensure we have valid numbers
+        if (isNaN(current)) current = 0;
+        if (isNaN(max)) max = 0;
         
         this.power = Math.max(0, current);
         this.maxPower = Math.max(0, max);

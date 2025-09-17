@@ -11,6 +11,7 @@ class GameEngine {
         this.gameSpeed = 1.0;
         this.lastUpdateTime = 0;
         this.deltaTime = 0;
+        this.gameStartTime = 0;
         
         // Game systems
         this.resourceManager = null;
@@ -216,10 +217,15 @@ class GameEngine {
      * Initialize the game world
      */
     initializeGameWorld(settings = {}) {
+        console.log('🌍 initializeGameWorld called with settings:', settings);
+        
         // Reset all systems
         this.resourceManager.reset();
         this.unitManager.reset();
         this.buildingManager.reset();
+        
+        // Set game start time
+        this.gameStartTime = Date.now();
         
         // Set initial resources
         this.resourceManager.setCredits(settings.startingCredits || 5000);
@@ -231,6 +237,15 @@ class GameEngine {
         
         // Place starting buildings and units
         this.placeStartingAssets();
+        
+        // Create enemy base for skirmish mode
+        console.log('📍 Debug - State:', this.currentState, 'Mission:', this.campaignManager.currentMission);
+        if (this.currentState === 'playing' && this.campaignManager.currentMission === null) {
+            console.log('📍 Attempting to create enemy base...');
+            this.createEnemyBase();
+        } else {
+            console.log('📍 Not creating enemy base - State:', this.currentState, 'Mission:', this.campaignManager.currentMission);
+        }
         
         console.log('🌍 Game world initialized');
     }
@@ -276,7 +291,94 @@ class GameEngine {
             faction: this.selectedFaction
         });
         
+        // WORKAROUND: Manually add to renderer since events aren't working
+        console.log('🔧 Manually adding objects to renderer as workaround...');
+        if (constructionYard) this.renderer.addBuilding(constructionYard);
+        if (powerPlant) this.renderer.addBuilding(powerPlant);
+        if (refinery) this.renderer.addBuilding(refinery);
+        if (engineer) this.renderer.addUnit(engineer);
+        if (harvester) this.renderer.addUnit(harvester);
+        
+        // Force power update with correct values
+        this.uiManager.updatePowerDisplay(this.resourceManager.getPower(), this.resourceManager.getMaxPower());
+        
         console.log('🏗️ Starting assets placed');
+    }
+    
+    /**
+     * Create enemy base for skirmish mode
+     */
+    createEnemyBase() {
+        const enemyFaction = 'soviet';
+        const baseX = 1200; // Place enemy base on the right side of map
+        const baseY = 300;
+        
+        // Enemy construction yard
+        const enemyConstruction = this.buildingManager.createBuilding('construction_yard', {
+            x: baseX,
+            y: baseY,
+            faction: enemyFaction
+        });
+        
+        // Enemy power plant
+        const enemyPower = this.buildingManager.createBuilding('tesla_reactor', {
+            x: baseX - 50,
+            y: baseY - 50,
+            faction: enemyFaction
+        });
+        
+        // Enemy refinery
+        const enemyRefinery = this.buildingManager.createBuilding('ore_refinery', {
+            x: baseX + 50,
+            y: baseY - 50,
+            faction: enemyFaction
+        });
+        
+        // Enemy barracks
+        const enemyBarracks = this.buildingManager.createBuilding('barracks', {
+            x: baseX - 50,
+            y: baseY + 50,
+            faction: enemyFaction
+        });
+        
+        // Enemy units
+        const enemyEngineer = this.unitManager.createUnit('engineer', {
+            x: baseX - 20,
+            y: baseY + 100,
+            faction: enemyFaction
+        });
+        
+        const enemyHarvester = this.unitManager.createUnit('war_miner', {
+            x: baseX + 70,
+            y: baseY + 20,
+            faction: enemyFaction
+        });
+        
+        // Some defensive units
+        const conscript1 = this.unitManager.createUnit('conscript', {
+            x: baseX + 20,
+            y: baseY + 60,
+            faction: enemyFaction
+        });
+        
+        const conscript2 = this.unitManager.createUnit('conscript', {
+            x: baseX - 20,
+            y: baseY + 80,
+            faction: enemyFaction
+        });
+        
+        // WORKAROUND: Manually add enemy units to renderer
+        console.log('🔧 Manually adding enemy base to renderer...');
+        if (enemyConstruction) this.renderer.addBuilding(enemyConstruction);
+        if (enemyPower) this.renderer.addBuilding(enemyPower);
+        if (enemyRefinery) this.renderer.addBuilding(enemyRefinery);
+        if (enemyBarracks) this.renderer.addBuilding(enemyBarracks);
+        if (enemyEngineer) this.renderer.addUnit(enemyEngineer);
+        if (enemyHarvester) this.renderer.addUnit(enemyHarvester);
+        if (conscript1) this.renderer.addUnit(conscript1);
+        if (conscript2) this.renderer.addUnit(conscript2);
+        
+        console.log('🔴 Enemy base created');
     }
     
     /**
@@ -356,8 +458,14 @@ class GameEngine {
         }
         
         // For skirmish: check if all enemies are eliminated
-        const enemyBuildings = this.buildingManager.getBuildingsByFaction('enemy');
-        const enemyUnits = this.unitManager.getUnitsByFaction('enemy');
+        const enemyBuildings = this.buildingManager.getBuildingsByFaction('soviet');
+        const enemyUnits = this.unitManager.getUnitsByFaction('soviet');
+        
+        // Only check victory after game has been running for at least 5 seconds
+        // and enemies have been properly initialized
+        if (Date.now() - this.gameStartTime < 5000) {
+            return false;
+        }
         
         return enemyBuildings.length === 0 && enemyUnits.length === 0;
     }
@@ -486,11 +594,13 @@ class GameEngine {
         });
         
         this.resourceManager.on('powerChanged', (power, maxPower) => {
+            console.log('🔗 GameEngine received powerChanged event:', power, '/', maxPower);
             this.uiManager.updatePowerDisplay(power, maxPower);
         });
         
         // Unit events
         this.unitManager.on('unitCreated', (unit) => {
+            console.log('🔗 GameEngine received unitCreated event for:', unit.type);
             this.renderer.addUnit(unit);
         });
         
@@ -500,6 +610,7 @@ class GameEngine {
         
         // Building events
         this.buildingManager.on('buildingCreated', (building) => {
+            console.log('🔗 GameEngine received buildingCreated event for:', building.type);
             this.renderer.addBuilding(building);
         });
         
