@@ -19,6 +19,9 @@ class ResourceManager {
         this.powerPlants = [];
         this.harvesters = [];
         
+        // Resource patches on the map
+        this.resourcePatches = [];
+        
         // Event system
         this.eventListeners = {};
         
@@ -45,8 +48,13 @@ class ResourceManager {
         this.powerPlants = [];
         this.harvesters = [];
         
-        this.emit('creditsChanged', this.credits);
-        this.emit('powerChanged', this.power, this.maxPower);
+        // Ensure values are valid numbers before emitting events
+        const safeCredits = isNaN(this.credits) ? 5000 : this.credits;
+        const safePower = isNaN(this.power) ? 100 : this.power;
+        const safeMaxPower = isNaN(this.maxPower) ? 100 : this.maxPower;
+        
+        this.emit('creditsChanged', safeCredits);
+        this.emit('powerChanged', safePower, safeMaxPower);
     }
     
     /**
@@ -393,6 +401,77 @@ class ResourceManager {
         this.emit('powerChanged', this.power, this.maxPower);
         
         console.log('📁 ResourceManager data loaded');
+    }
+    
+    /**
+     * Add a resource patch to the map
+     */
+    addResourcePatch(x, y, amount) {
+        const patch = {
+            id: Date.now() + Math.random(),
+            x: x,
+            y: y,
+            amount: amount,
+            maxAmount: amount,
+            type: 'ore',
+            radius: 30 // Collection radius
+        };
+        
+        this.resourcePatches.push(patch);
+        console.log(`💎 Resource patch added at (${x}, ${y}) with ${amount} ore`);
+        return patch;
+    }
+    
+    /**
+     * Find the nearest resource patch to a position
+     */
+    findNearestResourcePatch(x, y, maxDistance = 200) {
+        let nearest = null;
+        let nearestDistance = maxDistance;
+        
+        for (const patch of this.resourcePatches) {
+            if (patch.amount <= 0) continue;
+            
+            const distance = Math.sqrt((patch.x - x) ** 2 + (patch.y - y) ** 2);
+            if (distance < nearestDistance) {
+                nearest = patch;
+                nearestDistance = distance;
+            }
+        }
+        
+        return nearest;
+    }
+    
+    /**
+     * Harvest ore from a resource patch
+     */
+    harvestFromPatch(patchId, amount) {
+        const patch = this.resourcePatches.find(p => p.id === patchId);
+        if (!patch || patch.amount <= 0) return 0;
+        
+        const harvested = Math.min(amount, patch.amount);
+        patch.amount -= harvested;
+        
+        console.log(`💰 Harvested ${harvested} ore from patch (${patch.amount} remaining)`);
+        
+        // Remove empty patches
+        if (patch.amount <= 0) {
+            const index = this.resourcePatches.indexOf(patch);
+            if (index > -1) {
+                this.resourcePatches.splice(index, 1);
+                console.log('💎 Resource patch depleted and removed');
+            }
+        }
+        
+        return harvested;
+    }
+    
+    /**
+     * Get all resource patches
+     */
+    getResourcePatches() {
+        return this.resourcePatches.slice();
+    }
     }
     
     /**

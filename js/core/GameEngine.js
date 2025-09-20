@@ -202,6 +202,7 @@ class GameEngine {
         this.difficulty = gameSettings.difficulty;
         this.mapSize = gameSettings.mapSize;
         this.currentState = 'playing';
+        this.gameStartTime = performance.now();
         
         // Initialize game world
         this.initializeGameWorld(gameSettings);
@@ -232,6 +233,16 @@ class GameEngine {
         // Place starting buildings and units
         this.placeStartingAssets();
         
+        // Force UI update for initial values
+        if (this.uiManager) {
+            const credits = this.resourceManager.getCredits();
+            const power = this.resourceManager.getPower();
+            const maxPower = this.resourceManager.getMaxPower();
+            console.log('🔋 Initial values - credits:', credits, 'power:', power, 'maxPower:', maxPower);
+            this.uiManager.updateCreditsDisplay(credits);
+            this.uiManager.updatePowerDisplay(power, maxPower);
+        }
+        
         console.log('🌍 Game world initialized');
     }
     
@@ -242,6 +253,7 @@ class GameEngine {
         const startingBuildings = this.factionManager.getStartingBuildings(this.selectedFaction);
         const startingUnits = this.factionManager.getStartingUnits(this.selectedFaction);
         
+        // PLAYER STARTING ASSETS
         // Place construction yard at center
         const constructionYard = this.buildingManager.createBuilding('construction_yard', {
             x: 400,
@@ -276,7 +288,135 @@ class GameEngine {
             faction: this.selectedFaction
         });
         
-        console.log('🏗️ Starting assets placed');
+        console.log('🏗️ Player starting assets placed');
+        
+        // ENEMY STARTING ASSETS (placed far from player)
+        try {
+            const enemyFaction = 'enemy';
+            
+            console.log('🏗️ Creating enemy assets...');
+            
+            // Enemy construction yard
+            const enemyConstructionYard = this.buildingManager.createBuilding('construction_yard', {
+                x: 1200,
+                y: 900,
+                faction: enemyFaction
+            });
+            console.log('🏗️ Enemy construction yard created');
+            
+            // Enemy power plant
+            const enemyPowerPlant = this.buildingManager.createBuilding('power_plant', {
+                x: 1150,
+                y: 850,
+                faction: enemyFaction
+            });
+            console.log('🏗️ Enemy power plant created');
+            
+            // Enemy ore refinery
+            const enemyRefinery = this.buildingManager.createBuilding('ore_refinery', {
+                x: 1250,
+                y: 850,
+                faction: enemyFaction
+            });
+            console.log('🏗️ Enemy refinery created');
+            
+            // Enemy units
+            const enemyEngineer = this.unitManager.createUnit('engineer', {
+                x: 1180,
+                y: 950,
+                faction: enemyFaction
+            });
+            console.log('🏗️ Enemy engineer created');
+            
+            const enemyHarvester = this.unitManager.createUnit('chrono_miner', {
+                x: 1270,
+                y: 880,
+                faction: enemyFaction
+            });
+            console.log('🏗️ Enemy harvester created');
+            
+            // Enemy attack units
+            const enemyTank = this.unitManager.createUnit('grizzly_tank', {
+                x: 1150,
+                y: 950,
+                faction: enemyFaction
+            });
+            console.log('🏗️ Enemy tank created');
+            
+            const enemyInfantry = this.unitManager.createUnit('gi', {
+                x: 1100,
+                y: 900,
+                faction: enemyFaction
+            });
+            console.log('🏗️ Enemy infantry created');
+            
+            console.log('🏗️ All enemy assets created successfully');
+            
+        } catch (error) {
+            console.error('❌ Failed to create enemy assets:', error);
+        }
+        
+        // PLACE RESOURCE PATCHES
+        this.placeResourcePatches();
+        
+        console.log('🏗️ Starting assets placed for player and enemy');
+    }
+    
+    /**
+     * Place resource patches on the map
+     */
+    placeResourcePatches() {
+        console.log('💎 Placing resource patches...');
+        
+        // Create ore patches near starting positions
+        const orePatches = [
+            // Near player starting area
+            { x: 300, y: 200, amount: 5000 },
+            { x: 500, y: 350, amount: 4000 },
+            { x: 250, y: 400, amount: 3000 },
+            
+            // Center map patches
+            { x: 600, y: 500, amount: 8000 },
+            { x: 800, y: 400, amount: 6000 },
+            { x: 700, y: 600, amount: 7000 },
+            
+            // Near enemy starting area
+            { x: 1100, y: 700, amount: 5000 },
+            { x: 1300, y: 800, amount: 4000 },
+            { x: 1200, y: 950, amount: 3000 },
+            
+            // Additional patches
+            { x: 400, y: 700, amount: 3500 },
+            { x: 1000, y: 300, amount: 4500 },
+        ];
+        
+        for (const patch of orePatches) {
+            this.createResourcePatch(patch.x, patch.y, patch.amount);
+        }
+        
+        console.log('💎 Resource patches placed');
+    }
+    
+    /**
+     * Create a resource patch at specified location
+     */
+    createResourcePatch(x, y, amount) {
+        // For now, we'll store resource patches in the renderer for visual display
+        if (this.renderer && this.renderer.addResourcePatch) {
+            this.renderer.addResourcePatch({
+                x: x,
+                y: y,
+                amount: amount,
+                maxAmount: amount,
+                type: 'ore'
+            });
+        }
+        
+        // Store in resource manager for harvesting logic
+        if (this.resourceManager && this.resourceManager.addResourcePatch) {
+            this.resourceManager.addResourcePatch(x, y, amount);
+        }
+    }
     }
     
     /**
@@ -355,9 +495,24 @@ class GameEngine {
             return requiredObjectives.length > 0 && completedRequiredObjectives.length === requiredObjectives.length;
         }
         
-        // For skirmish: check if all enemies are eliminated
+        // For skirmish: add minimum game time requirement and check if all enemies are eliminated
+        const currentTime = performance.now();
+        const gameStartTime = this.gameStartTime || currentTime;
+        const gameTimeElapsed = currentTime - gameStartTime;
+        const minimumGameTime = 10000; // 10 seconds minimum
+        
+        if (gameTimeElapsed < minimumGameTime) {
+            return false; // Game must run for at least 10 seconds
+        }
+        
         const enemyBuildings = this.buildingManager.getBuildingsByFaction('enemy');
         const enemyUnits = this.unitManager.getUnitsByFaction('enemy');
+        
+        // For now, require player to have built at least 3 units to win
+        const playerUnits = this.unitManager.getUnitsByFaction(this.selectedFaction);
+        if (playerUnits.length < 3) {
+            return false;
+        }
         
         return enemyBuildings.length === 0 && enemyUnits.length === 0;
     }
