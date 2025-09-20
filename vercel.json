@@ -1,15 +1,6 @@
 {
   "version": 2,
   "name": "scotty-masons-revenge",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "."
-      }
-    }
-  ],
   "routes": [
     {
       "src": "/(.*)",
@@ -57,11 +48,6 @@
       ]
     }
   ],
-  "functions": {
-    "app": {
-      "includeFiles": "**"
-    }
-  },
   "regions": ["iad1"],
   "github": {
     "silent": true
