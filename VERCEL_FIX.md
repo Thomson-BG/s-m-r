@@ -49,6 +49,7 @@ The `vercel.json` was configured to use `@vercel/static-build` which expects a b
 {
   "version": 2,
   "name": "scotty-masons-revenge",
+  "outputDirectory": ".",
   "routes": [
     {
       "src": "/(.*)",
@@ -64,6 +65,13 @@ The `vercel.json` was configured to use `@vercel/static-build` which expects a b
 - No build process is attempted
 - Files are served directly from the repository root
 - Deployment should succeed without the "public directory" error
+
+## Additional Fix Applied
+**Issue**: Even after removing the build configuration, Vercel was still expecting an output directory because it detected the presence of `package.json` with a build script.
+
+**Solution**: Added `"outputDirectory": "."` to `vercel.json` to explicitly tell Vercel that the build output should be the root directory (where all the static files already exist).
+
+This resolves the error: `"No Output Directory named 'public' found after the Build completed"`
 
 ## File Structure (Root Level)
 ```

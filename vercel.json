@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "scotty-masons-revenge",
+  "outputDirectory": ".",
   "routes": [
     {
       "src": "/(.*)",
