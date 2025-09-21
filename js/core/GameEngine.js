@@ -417,7 +417,6 @@ class GameEngine {
             this.resourceManager.addResourcePatch(x, y, amount);
         }
     }
-    }
     
     /**
      * Pause the game
