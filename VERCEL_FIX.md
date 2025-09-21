@@ -44,20 +44,21 @@ The `vercel.json` was configured to use `@vercel/static-build` which expects a b
 }
 ```
 
-### After (vercel.json):
+### Current (vercel.json):
 ```json
-{
-  "version": 2,
-  "name": "scotty-masons-revenge",
-  "outputDirectory": ".",
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
-  // ... headers and other config remain the same
-}
+{}
+```
+
+With `.vercelignore`:
+```
+ScottyMasonsRevenge/
+ScottyMasonsRevenge.xcodeproj/
+*.md
+!README.md
+server.py
+start-server.sh
+.gitignore
+.gitignore_web
 ```
 
 ## Result
@@ -69,9 +70,18 @@ The `vercel.json` was configured to use `@vercel/static-build` which expects a b
 ## Additional Fix Applied
 **Issue**: Even after removing the build configuration, Vercel was still expecting an output directory because it detected the presence of `package.json` with a build script.
 
-**Solution**: Added `"outputDirectory": "."` to `vercel.json` to explicitly tell Vercel that the build output should be the root directory (where all the static files already exist).
+**Solution 1**: Added `"outputDirectory": "."` to `vercel.json` to explicitly tell Vercel that the build output should be the root directory (where all the static files already exist).
 
-This resolves the error: `"No Output Directory named 'public' found after the Build completed"`
+This resolved the error: `"No Output Directory named 'public' found after the Build completed"`
+
+**Issue Persisted**: Deployment continued to fail, indicating more complex framework detection issues.
+
+**Solution 2**: Implemented minimal Vercel configuration approach:
+1. Simplified `vercel.json` to empty object `{}` to let Vercel auto-detect as static site
+2. Added `.vercelignore` to exclude iOS project files that might confuse framework detection
+3. Removed all build-related scripts from `package.json`
+
+This approach should prevent Vercel from attempting any build process and treat the project as a pure static site.
 
 ## File Structure (Root Level)
 ```
