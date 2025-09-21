@@ -1,0 +1,8 @@
+ScottyMasonsRevenge/
+ScottyMasonsRevenge.xcodeproj/
+*.md
+!README.md
+server.py
+start-server.sh
+.gitignore
+.gitignore_web
