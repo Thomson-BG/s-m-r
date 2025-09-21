@@ -472,7 +472,6 @@ class ResourceManager {
     getResourcePatches() {
         return this.resourcePatches.slice();
     }
-    }
     
     /**
      * Debug method to add resources (for testing)
